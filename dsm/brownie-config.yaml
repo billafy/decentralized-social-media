@@ -1,0 +1,16 @@
+dependencies:
+  # - smartcontractkit/chainlink@1.4.1
+compiler:
+  solc:
+    remappings:
+      # - '@chainlink=smartcontractkit/chainlink@1.4.1'
+networks:
+  rinkeby:
+    verify: true
+  goerli: 
+    verify: true
+  development:
+    verify: false
+dotenv: .env
+wallets: 
+  from_key: ${PRIVATE_KEY}
