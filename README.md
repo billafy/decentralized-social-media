@@ -1,9 +1,9 @@
 # Decentralized Social Media + NFT Marketplace
 
-/dsm
+/decentralized-social-media
 
 	Brownie Smart Contract Development Environment
 
-/dsm-client
+/decentralized-social-media-client
 
 	Next.js Front-end
