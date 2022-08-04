@@ -1,9 +1,9 @@
 dependencies:
-  # - smartcontractkit/chainlink@1.4.1
+  - OpenZeppelin/openzeppelin-contracts@4.7.2
 compiler:
   solc:
     remappings:
-      # - '@chainlink=smartcontractkit/chainlink@1.4.1'
+      - '@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.7.2'
 networks:
   rinkeby:
     verify: true
