@@ -8,7 +8,9 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 error UserManager__ZeroBalance();
 error UserManager__WithdrawFailed();
-error UserManager__UsernameLengthLessThanSix();
+error UserManager__UsernameTooShort();
+error UserManager__UsernameTooLong();
+error UserManager__AboutMeTooLong();
 
 contract UserManager {
 	/* structs */
@@ -55,8 +57,8 @@ contract UserManager {
 
 	function createUser() public {
 		if(!s_users[msg.sender].exists) {
-			string memory username = string.concat("User-", Strings.toString(s_userCount));
-			string memory aboutMe = string.concat("Hello, I am ", username);
+			string memory username = string(abi.encodePacked("User-", Strings.toString(s_userCount)));
+			string memory aboutMe = string(abi.encodePacked("Hello, I am ", username));
 			User memory user = User({
 				username: username,
 				aboutMe: aboutMe,
@@ -72,13 +74,19 @@ contract UserManager {
 	}
 
 	function updateUsername(string memory username) public userExists(msg.sender) {
-		if(uint256(bytes(username).length) < 6) 
-			revert UserManager__UsernameLengthLessThanSix();
+		uint256 usernameLength = bytes(username).length;
+		if(usernameLength < 6) 
+			revert UserManager__UsernameTooShort();
+		if(usernameLength > 18) 
+			revert UserManager__UsernameTooLong();
 		s_users[msg.sender].username = username;
 		emit UsernameUpdated(msg.sender, username);
 	}
 
 	function updateAboutMe(string memory aboutMe) public userExists(msg.sender) {
+		uint256 aboutMeLength = bytes(aboutMe).length;
+		if(aboutMeLength > 256) 
+			revert UserManager__AboutMeTooLong();
 		s_users[msg.sender].aboutMe = aboutMe;		
 		emit AboutMeUpdated(msg.sender, aboutMe);
 	}
