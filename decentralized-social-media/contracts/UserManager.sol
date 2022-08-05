@@ -42,7 +42,7 @@ contract UserManager {
 
 	/* constructors */
 
-	constructor() {
+	constructor() public {
 		s_userCount = 0;
 	}
 
