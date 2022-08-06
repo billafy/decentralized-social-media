@@ -14,23 +14,20 @@ contract PostNft is ERC721URIStorage {
 
 	uint256 private s_tokenCounter;
 
-	/* events */
-
-	event Minted(address indexed creator, uint256 indexed tokenId);
-
 	/* constructors */
 
-	constructor() ERC721("Post", "PST") public {
+	constructor() ERC721("Post", "PST") {
 		s_tokenCounter = 0;
 	}
 
 	/* main functions */
 
-	function mintPostNft(address creator, string memory tokenURI) public {
-		_safeMint(creator, s_tokenCounter);
-		_setTokenURI(s_tokenCounter, tokenURI);
-		emit Minted(creator, s_tokenCounter);
-		s_tokenCounter = s_tokenCounter + 1;
+	function mintNft(address creator, string memory tokenURI) public returns (uint256) {
+		uint256 tokenId = s_tokenCounter;
+		s_tokenCounter += 1;
+		_safeMint(creator, tokenId);
+		_setTokenURI(tokenId, tokenURI);
+		return tokenId;
 	}
 
 	/* view functions */

@@ -11,6 +11,7 @@ error UserManager__WithdrawFailed();
 error UserManager__UsernameTooShort();
 error UserManager__UsernameTooLong();
 error UserManager__AboutMeTooLong();
+error UserManager__UserDoesNotExist();
 
 contract UserManager {
 	/* structs */
@@ -42,15 +43,16 @@ contract UserManager {
 
 	/* constructors */
 
-	constructor() public {
+	constructor() {
 		s_userCount = 0;
 	}
 
 	/* modifiers */
 
 	modifier userExists(address userAddress) {
-		if(s_users[userAddress].exists) 
-			_;
+		if(!s_users[userAddress].exists) 
+			revert UserManager__UserDoesNotExist();	
+		_;
 	}
 
 	/* main functions */
@@ -102,7 +104,7 @@ contract UserManager {
 
 	function unfollow(address userAddress) public userExists(msg.sender) userExists(userAddress) {
 		if(s_follows[msg.sender][userAddress]) {
-			s_follows[msg.sender][userAddress] = false;
+			delete s_follows[msg.sender][userAddress];
 			s_users[msg.sender].followingCount -= 1;
 			s_users[userAddress].followerCount -= 1;
 			emit Unfollowed(msg.sender, userAddress);
@@ -111,7 +113,7 @@ contract UserManager {
 
 	function removeFollower(address userAddress) public userExists(msg.sender) userExists(userAddress) {
 		if(s_follows[userAddress][msg.sender]) {
-			s_follows[userAddress][msg.sender] = false;
+			delete s_follows[userAddress][msg.sender];
 			s_users[msg.sender].followerCount -= 1;
 			s_users[userAddress].followingCount -= 1;
 			emit FollowerRemoved(userAddress, msg.sender);
