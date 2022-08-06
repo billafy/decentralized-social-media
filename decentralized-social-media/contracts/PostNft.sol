@@ -16,7 +16,7 @@ contract PostNft is ERC721URIStorage {
 
 	/* events */
 
-	event Minted(uint256 indexed tokenId);
+	event Minted(address indexed creator, uint256 indexed tokenId);
 
 	/* constructors */
 
@@ -26,10 +26,10 @@ contract PostNft is ERC721URIStorage {
 
 	/* main functions */
 
-	function mintPostNft(address creator, string memory _tokenURI) public {
+	function mintPostNft(address creator, string memory tokenURI) public {
 		_safeMint(creator, s_tokenCounter);
-		_setTokenURI(s_tokenCounter, _tokenURI);
-		emit Minted(s_tokenCounter);
+		_setTokenURI(s_tokenCounter, tokenURI);
+		emit Minted(creator, s_tokenCounter);
 		s_tokenCounter = s_tokenCounter + 1;
 	}
 
