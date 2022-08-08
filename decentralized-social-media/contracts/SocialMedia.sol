@@ -15,8 +15,9 @@ error SocialMedia__InsufficientMintFee();
 error SocialMedia__BidCannotBeZero();
 error SocialMedia__AlreadyBidded();
 error SocialMedia__CreatorCannotBid();
+error SocialMedia__PostNotMinted();
 
-contract SocialMedia is UserManager {
+contract SocialMedia is UserManager, PostNft {
 	/* structs */
 
 	struct Post {
@@ -31,12 +32,10 @@ contract SocialMedia is UserManager {
 	/* state variables */
 
 	uint256 private immutable i_mintFee;
-	PostNft private immutable i_postNft;
-	IERC721 private immutable i_postNftInterface;
 	uint256 private s_postCount;
 	mapping(uint256 => Post) private s_posts;
 	mapping(uint256 => mapping(address => bool)) private s_likes;
-	mapping(uint256 => mapping(address => uint256)) private s_bids;
+	mapping(uint256 => mapping(uint256 => mapping(address => uint256))) private s_bids;
 
 	/* events */
 
@@ -45,14 +44,13 @@ contract SocialMedia is UserManager {
 	event PostMinted(uint256 indexed postId, uint256 indexed tokenId);
 	event PostLiked(uint256 indexed postId, address liker);
 	event PostDisliked(uint256 indexed postId, address disliker);
-	event PostBidded(uint256 indexed postId, address bidder, uint256 bidAmount);
+	event BidSubmitted(uint256 indexed postId, address bidder, uint256 bid);
+	event BidAccepted(uint256 indexed postId, address bidder, uint256 winningBid);
 
 	/* constructors */
 
-	constructor(address postNftAddress, uint256 mintFee) {
+	constructor(uint256 mintFee) {
 		s_postCount = 0;
-		i_postNft = PostNft(postNftAddress);
-		i_postNftInterface = IERC721(postNftAddress);
 		i_mintFee = mintFee;
 	}
 
@@ -67,6 +65,12 @@ contract SocialMedia is UserManager {
 	modifier isPostCreator(uint256 postId) {
 		if(msg.sender != s_posts[postId].creator) 
 			revert SocialMedia__NotPostCreator();
+		_;
+	}
+
+	modifier isPostMinted(uint256 postId) {
+		if(!s_posts[postId].minted) 
+			revert SocialMedia__PostNotMinted();
 		_;
 	}
 
@@ -87,9 +91,8 @@ contract SocialMedia is UserManager {
 	}
 
 	function deletePost(uint256 postId) public userExists(msg.sender) postExists(postId) isPostCreator(postId) {
-		/*need to find a way to burn*/
-		/*if(s_posts[postId].minted) 
-			i_postNftInterface._burn(s_posts[postId].tokenId);*/
+		if(s_posts[postId].minted) 
+			burnNft(s_posts[postId].tokenId);
 		delete s_posts[postId];
 		emit PostDeleted(postId);
 	}
@@ -97,8 +100,8 @@ contract SocialMedia is UserManager {
 	function mintPost(uint256 postId) public payable userExists(msg.sender) postExists(postId) isPostCreator(postId) {
 		if(msg.value != i_mintFee) 
 			revert SocialMedia__InsufficientMintFee();
-		uint256 tokenId = i_postNft.mintNft(msg.sender, s_posts[postId].URI);
-		if(i_postNft.getApproved(tokenId) != address(this)) 
+		uint256 tokenId = mintNft(msg.sender, s_posts[postId].URI);
+		if(getApproved(tokenId) != address(this)) 
 			revert SocialMedia__NftNotApproved();
 		s_posts[postId].minted = true;
 		s_posts[postId].tokenId = tokenId;
@@ -121,36 +124,77 @@ contract SocialMedia is UserManager {
 		}
 	}
 
-	function bid(uint256 postId, uint256 bidAmount) public userExists(msg.sender) postExists(postId) {
+	function submitBid(
+		uint256 postId, 
+		uint256 bid
+	) public userExists(msg.sender) postExists(postId) isPostMinted(postId) {
 		if(s_posts[postId].creator == msg.sender) 
 			revert SocialMedia__CreatorCannotBid();
-		if(bidAmount <= 0) 
+		if(bid <= 0) 
 			revert SocialMedia__BidCannotBeZero();
-		if(s_bids[postId][msg.sender] != 0) 
+		uint256 tokenId = s_posts[postId].tokenId;
+		if(s_bids[postId][tokenId][msg.sender] != 0) 
 			revert SocialMedia__AlreadyBidded();
-		s_bids[postId][msg.sender] = bidAmount;
-		emit PostBidded(postId, msg.sender, bidAmount);
+		s_bids[postId][tokenId][msg.sender] = bid;
+		emit BidSubmitted(postId, msg.sender, bid);
 	}
 
-	/*work to do*/
-	/*function acceptBid(
+	function acceptBid(
 		uint256 postId, 
 		address bidder
-	) public payable userExists(msg.sender) postExists(postId) isPostCreator(postId) {
-		if(s_bids[postId][bidder] == 0) 
+	) public userExists(msg.sender) postExists(postId) isPostCreator(postId) isPostMinted(postId) {
+		uint256 tokenId = s_posts[postId].tokenId;
+		if(s_bids[postId][tokenId][bidder] == 0) 
 			revert SocialMedia__BidCannotBeZero();
-		uint256 winningBid = s_bids[postId][bidder];
-		s_bids[postId][bidder] = 0;
-		s_users[msg.sender].balance += winningBid;
-	}*/
+		uint256 winningBid = s_bids[postId][tokenId][bidder];
+		s_posts[postId].minted = false;
+		s_posts[postId].creator = bidder;
+		s_posts[postId].tokenId = 0;
+		s_bids[postId][tokenId][bidder] = 0;
+		s_users[msg.sender]._balance += winningBid;
+		burnNft(s_posts[postId].tokenId);
+		emit BidAccepted(postId, bidder, winningBid);
+	}
 
 	/* view functions */
 
-	function getPost(uint256 postId) public view returns (Post memory) {
-		return s_posts[postId];
+	function getCreator(uint256 postId) public view returns (address) {
+		return s_posts[postId].creator;
+	}
+
+	function getURI(uint256 postId) public view returns (string memory) {
+		return s_posts[postId].URI;
+	}
+
+	function getLikes(uint256 postId) public view returns (uint256) {
+		return s_posts[postId].likes;
+	}
+
+	function getIsMinted(uint256 postId) public view returns (bool) {
+		return s_posts[postId].minted;
+	}
+
+	function getTokenId(uint256 postId) public view returns (uint256) {
+		return s_posts[postId].tokenId;
+	}
+
+	function getPostExists(uint256 postId) public view returns (bool) {
+		return s_posts[postId].exists;
 	}
 
 	function getPostCount() public view returns (uint256) {
 		return s_postCount;
+	}
+
+	function getMintFee() public view returns (uint256) {
+		return i_mintFee;
+	}
+
+	function getHasLiked(uint256 postId, address liker) public view returns (bool) {
+		return s_likes[postId][liker];
+	}
+
+	function getBid(uint256 postId, uint256 tokenId, address bidder) public view returns (uint256) {
+		return s_bids[postId][tokenId][bidder];
 	}
 }

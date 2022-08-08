@@ -21,8 +21,8 @@ contract UserManager {
 		string aboutMe;
 		uint256 followerCount;
 		uint256 followingCount;
-		uint256 balance;
 		bool exists;
+		uint256 _balance;
 	}
 
 	/* state variables */
@@ -33,13 +33,13 @@ contract UserManager {
 
 	/* events */
 
-	event UserCreated(address indexed userAddress, string username, string aboutMe);
-	event UsernameUpdated(address indexed userAddress, string username);
-	event AboutMeUpdated(address indexed userAddress, string aboutMe);
+	event UserCreated(address indexed user, string username, string aboutMe);
+	event UsernameUpdated(address indexed user, string username);
+	event AboutMeUpdated(address indexed user, string aboutMe);
 	event Followed(address indexed from, address indexed to);
 	event Unfollowed(address indexed from, address indexed to);
 	event FollowerRemoved(address indexed from, address indexed to);
-	event Withdrawn(address indexed userAddress, uint256 amount);
+	event Withdrawn(address indexed user, uint256 amount);
 
 	/* constructors */
 
@@ -49,8 +49,8 @@ contract UserManager {
 
 	/* modifiers */
 
-	modifier userExists(address userAddress) {
-		if(!s_users[userAddress].exists) 
+	modifier userExists(address user) {
+		if(!s_users[user].exists) 
 			revert UserManager__UserDoesNotExist();	
 		_;
 	}
@@ -66,8 +66,8 @@ contract UserManager {
 				aboutMe: aboutMe,
 				followerCount: 0,
 				followingCount: 0,
-				balance: 0,
-				exists: true
+				exists: true,
+				_balance: 0
 			});
 			s_users[msg.sender] = user;
 			s_userCount += 1;
@@ -93,64 +93,72 @@ contract UserManager {
 		emit AboutMeUpdated(msg.sender, aboutMe);
 	}
 
-	function follow(address userAddress) public userExists(msg.sender) userExists(userAddress) {
-		if(!s_follows[msg.sender][userAddress]) {
-			s_follows[msg.sender][userAddress] = true;
+	function follow(address user) public userExists(msg.sender) userExists(user) {
+		if(!s_follows[msg.sender][user] && msg.sender != user) {
+			s_follows[msg.sender][user] = true;
 			s_users[msg.sender].followingCount += 1;
-			s_users[userAddress].followerCount += 1;
-			emit Followed(msg.sender, userAddress);
+			s_users[user].followerCount += 1;
+			emit Followed(msg.sender, user);
 		}
 	}
 
-	function unfollow(address userAddress) public userExists(msg.sender) userExists(userAddress) {
-		if(s_follows[msg.sender][userAddress]) {
-			delete s_follows[msg.sender][userAddress];
+	function unfollow(address user) public userExists(msg.sender) userExists(user) {
+		if(s_follows[msg.sender][user]) {
+			delete s_follows[msg.sender][user];
 			s_users[msg.sender].followingCount -= 1;
-			s_users[userAddress].followerCount -= 1;
-			emit Unfollowed(msg.sender, userAddress);
+			s_users[user].followerCount -= 1;
+			emit Unfollowed(msg.sender, user);
 		}
 	}
 
-	function removeFollower(address userAddress) public userExists(msg.sender) userExists(userAddress) {
-		if(s_follows[userAddress][msg.sender]) {
-			delete s_follows[userAddress][msg.sender];
+	function removeFollower(address user) public userExists(msg.sender) userExists(user) {
+		if(s_follows[user][msg.sender]) {
+			delete s_follows[user][msg.sender];
 			s_users[msg.sender].followerCount -= 1;
-			s_users[userAddress].followingCount -= 1;
-			emit FollowerRemoved(userAddress, msg.sender);
+			s_users[user].followingCount -= 1;
+			emit FollowerRemoved(user, msg.sender);
 		}
 	}
 
 	function withdraw() public payable userExists(msg.sender) {
-		uint256 balance = s_users[msg.sender].balance;
-		s_users[msg.sender].balance = 0;
-		if(balance <= 0) 
+		uint256 _balance = s_users[msg.sender]._balance;
+		s_users[msg.sender]._balance = 0;
+		if(_balance <= 0) 
 			revert UserManager__ZeroBalance();
-		(bool success, ) = payable(msg.sender).call{value: balance}("");
+		(bool success, ) = payable(msg.sender).call{value: _balance}("");
 		if(!success) 
 			revert UserManager__WithdrawFailed();
-		emit Withdrawn(msg.sender, balance);
+		emit Withdrawn(msg.sender, _balance);
 	}
 
 	/* view functions */
 
-	function getUsername(address userAddress) public view returns (string memory) {
-		return s_users[userAddress].username;
+	function getUsername(address user) public view returns (string memory) {
+		return s_users[user].username;
 	}
 
-	function getAboutMe(address userAddress) public view returns (string memory) {
-		return s_users[userAddress].aboutMe;
+	function getAboutMe(address user) public view returns (string memory) {
+		return s_users[user].aboutMe;
 	}
 
-	function getFollowerCount(address userAddress) public view returns (uint256) {
-		return s_users[userAddress].followerCount;
+	function getFollowerCount(address user) public view returns (uint256) {
+		return s_users[user].followerCount;
 	}
 
-	function getFollowingCount(address userAddress) public view returns (uint256) {
-		return s_users[userAddress].followingCount;
+	function getFollowingCount(address user) public view returns (uint256) {
+		return s_users[user].followingCount;
+	}
+
+	function getUserExists(address user) public view returns (bool) {
+		return s_users[user].exists;
 	}
 
 	function getBalance() public view returns (uint256) {
-		return s_users[msg.sender].balance;
+		return s_users[msg.sender]._balance;
+	}
+
+	function getHasFollowed(address from, address to) public view returns (bool) {
+		return s_follows[from][to];
 	}
 
 	function getUserCount() public view returns (uint256) {

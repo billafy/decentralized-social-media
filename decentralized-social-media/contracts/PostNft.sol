@@ -6,8 +6,6 @@ import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
 
 /* errors */
 
-error PostNft__TokenIDDoesNotExist();
-
 contract PostNft is ERC721URIStorage {
 
 	/* state variables */
@@ -17,17 +15,21 @@ contract PostNft is ERC721URIStorage {
 	/* constructors */
 
 	constructor() ERC721("Post", "PST") {
-		s_tokenCounter = 0;
+		s_tokenCounter = 1;
 	}
 
 	/* main functions */
 
-	function mintNft(address creator, string memory tokenURI) public returns (uint256) {
+	function mintNft(address creator, string memory tokenURI) internal returns (uint256) {
 		uint256 tokenId = s_tokenCounter;
 		s_tokenCounter += 1;
 		_safeMint(creator, tokenId);
 		_setTokenURI(tokenId, tokenURI);
 		return tokenId;
+	}
+
+	function burnNft(uint256 tokenId) internal {
+		_burn(tokenId);
 	}
 
 	/* view functions */
