@@ -94,6 +94,7 @@ contract SocialMedia is UserManager, PostNft {
 		if(s_posts[postId].minted) 
 			burnNft(s_posts[postId].tokenId);
 		delete s_posts[postId];
+		s_postCount -= 1;
 		emit PostDeleted(postId);
 	}
 
