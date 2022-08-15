@@ -76,7 +76,7 @@ contract SocialMedia is UserManager, PostNft {
 
 	/* main functions */
 
-	function createPost(string memory URI) public userExists(msg.sender) {
+	function createPost(string memory URI) public userExists(msg.sender) returns (uint256) {
 		Post memory post = Post({
 			creator: msg.sender,
 			URI: URI,
@@ -88,6 +88,7 @@ contract SocialMedia is UserManager, PostNft {
 		s_posts[s_postCount] = post;
 		emit PostCreated(s_postCount, msg.sender, URI);
 		s_postCount += 1;
+		return s_postCount;
 	}
 
 	function deletePost(uint256 postId) public userExists(msg.sender) postExists(postId) isPostCreator(postId) {
@@ -102,8 +103,6 @@ contract SocialMedia is UserManager, PostNft {
 		if(msg.value != i_mintFee) 
 			revert SocialMedia__InsufficientMintFee();
 		uint256 tokenId = mintNft(msg.sender, s_posts[postId].URI);
-		if(getApproved(tokenId) != address(this)) 
-			revert SocialMedia__NftNotApproved();
 		s_posts[postId].minted = true;
 		s_posts[postId].tokenId = tokenId;
 		emit PostMinted(postId, tokenId);

@@ -5,15 +5,11 @@ compiler:
     remappings:
       - '@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.7.2'
 networks:
-  default:
-    local
   rinkeby:
     verify: true
   goerli: 
     verify: true
   development:
     verify: false
-
-
 wallets: 
   from_key: ${PRIVATE_KEY}
