@@ -73,12 +73,50 @@ def test_update_username_short(social_media):
         social_media.updateUsername("short")
 
 
-def test_update_aboutme(social_media):
+def test_update_username_too_long(social_media):
     social_media.createUser()
-    prev_aboutme = social_media.getAboutMe(accounts[0])
-    social_media.updateAboutMe("temp")
-    new_aboutme = social_media.getAboutMe(accounts[0])
-    assert new_aboutme == "temp"
+    with brownie.reverts():
+        social_media.updateUsername("a" * 19)
+
+
+def test_update_username_event(social_media):
+    social_media.createUser()
+    txn = social_media.updateUsername("JanardhanJasPal")
+    event = txn.events["UsernameUpdated"]
+    assert event["user"] == accounts[0]
+    assert event["username"] == "JanardhanJasPal"
+
+
+def test_update_username_without_create_user(social_media):
+    with brownie.reverts():
+        social_media.updateUsername("JanardhanJasPal")
+
+
+def test_update_about_me(social_media):
+    social_media.createUser()
+    prev_about_me = social_media.getAboutMe(accounts[0])
+    social_media.updateAboutMe("about me new")
+    new_about_me = social_media.getAboutMe(accounts[0])
+    assert new_about_me == "about me new"
+
+
+def test_update_about_me_too_long(social_media):
+    social_media.createUser()
+    with brownie.reverts():
+        social_media.updateAboutMe("a" * 257)
+
+
+def test_update_about_me_event(social_media):
+    social_media.createUser()
+    txn = social_media.updateAboutMe("about me new")
+    event = txn.events["AboutMeUpdated"]
+    assert event["user"] == accounts[0]
+    assert event["aboutMe"] == "about me new"
+
+
+def test_update_about_me_without_create_user(social_media):
+    with brownie.reverts():
+        social_media.updateAboutMe("about me new")
 
 
 def test_following_follower(social_media):
