@@ -15,7 +15,6 @@ def social_media():
 
 
 def test_post_count(social_media):
-    social_media = SocialMedia[-1]
     prev_post_count = social_media.getPostCount()
     social_media.createUser()
     social_media.createPost("xd")
@@ -24,29 +23,27 @@ def test_post_count(social_media):
 
 
 def test_delete_post(social_media):
-    social_media = SocialMedia[-1]
-    prev_post_count = social_media.getPostCount()
-    social_media.createUser()
-    social_media.createPost("xd")
-    social_media.createPost("xdddd")
-    social_media.deletePost(0)
-    new_post_count = social_media.getPostCount()
-    assert prev_post_count + 1 == new_post_count
-
-
-def test_mint_post(social_media):
-    social_media = SocialMedia[-1]
     social_media.createUser()
     txn = social_media.createPost("xd")
     txn.wait(1)
+    post_count = txn.return_value
+    social_media.deletePost(post_count)
+    exists = social_media.getPostExists(post_count)
+    assert not exists
+
+
+def test_mint_post(social_media):
+    social_media.createUser()
+    txn = social_media.createPost("xd")
+    txn.wait(1)
+    post_count = txn.return_value
     isminted = social_media.getIsMinted(0)
-    social_media.mintPost(txn.return_value - 1, {"value": Wei("0.001 ether")})
+    social_media.mintPost(post_count, {"value": Wei("0.001 ether")})
     new_isminted = social_media.getIsMinted(0)
     assert bool(isminted) != bool(new_isminted)
 
 
 def test_inc_like(social_media):
-    social_media = SocialMedia[-1]
     social_media.createUser()
     social_media.createPost("xd")
     prev_like_count = social_media.getLikes(0)
@@ -56,7 +53,6 @@ def test_inc_like(social_media):
 
 
 def test_inc_dislike(social_media):
-    social_media = SocialMedia[-1]
     social_media.createUser()
     social_media.createPost("xd")
     prev_like_count = social_media.getLikes(0)

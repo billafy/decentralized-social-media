@@ -88,7 +88,7 @@ contract SocialMedia is UserManager, PostNft {
 		s_posts[s_postCount] = post;
 		emit PostCreated(s_postCount, msg.sender, URI);
 		s_postCount += 1;
-		return s_postCount;
+		return s_postCount - 1;
 	}
 
 	function deletePost(uint256 postId) public userExists(msg.sender) postExists(postId) isPostCreator(postId) {
