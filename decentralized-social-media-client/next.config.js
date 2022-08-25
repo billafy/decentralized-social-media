@@ -1,7 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
   reactStrictMode: true,
-  swcMinify: true,
+  images: {
+    domains: ['https://img.etimg.com'],
+  },
 }
-
-module.exports = nextConfig
