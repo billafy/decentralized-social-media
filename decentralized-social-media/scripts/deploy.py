@@ -14,10 +14,8 @@ from dotenv import load_dotenv
 from brownie import Wei, accounts, SocialMedia
 
 load_dotenv()
-def main():
-    deploy_account = accounts.add(accounts[0])
-    deployment_details = {
-        'from' : deploy_account
-    }
-    return SocialMedia.deploy((0.001), deployment_details)
 
+
+def main():
+    txn = SocialMedia.deploy((0.001), {"from": accounts[0]})
+    txn.wait(1)

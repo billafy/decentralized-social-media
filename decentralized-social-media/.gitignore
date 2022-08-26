@@ -1,6 +1,8 @@
-__pycache__
+/__pycache__
 .env
-.history
-.hypothesis/
-build/
-reports/
+/.history
+/.hypothesis
+/build
+/reports
+/node_modules
+/.pytest_cache

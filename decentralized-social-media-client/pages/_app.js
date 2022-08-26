@@ -97,7 +97,7 @@ function MyApp({ Component, pageProps }) {
     <>
       <GlobalStyle />
       <Main>
-        <MoralisProvider appId={"VL2nnsLcDMzT70ycjmzg5fDexOYtFJ9X9dagYDBz"} serverUrl={"https://bphspx2smztf.usemoralis.com:2053/server"}>
+        <MoralisProvider initializeOnMount={false}>
         <Navbar mobileMenu={{ MobileMenuIsOpen, setMobileMenuIsOpen }} />
         <Page>
           <MobileMenu open={MobileMenuIsOpen}>

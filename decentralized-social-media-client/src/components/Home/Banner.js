@@ -7,8 +7,12 @@ const BannerEl = styled.article`
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  background: url("/images/backdrop.png");
+  background: url("https://wallpapercave.com/wp/wp5910898.jpg");
+  background: url("https://advertisingweek.com/wp-content/uploads/2022/02/169the-smart-city-of-cyberspace-and-metaverse-digital-data-of-futuristic-picture-id1357404897-1170x600.jpg");
+  background: url("https://coinchapter.com/wp-content/uploads/2022/03/Metaverse.jpg");
+  background-size: 100% 100%;
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   padding: 6rem 1rem;
   gap: 1rem;
@@ -24,6 +28,15 @@ const BannerEl = styled.article`
   }
 `;
 
+const Content = styled.div`
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 1rem;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
 const Title = styled.h2`
   font-weight: 500;
   font-size: 5vw;
@@ -35,6 +48,8 @@ const Title = styled.h2`
 const Sub = styled.span`
   font-size: 1.12rem;
   color: white;
+  line-height: 2.5rem;
+  letter-spacing: 0.125rem;
 `;
 const Input = styled.div`
   display: flex;
@@ -50,12 +65,12 @@ const Input = styled.div`
   }
 `;
 const Btn = styled(Button)`
-  border-radius: 0 5px 5px 0;
+  border-radius: 5px;
   font-weight: 600;
   font-size: 1.2rem;
   padding: 10px;
   width: 6.25rem;
-  background-color: #7B68EE;
+  background-color: ${Colors.Secondary};
   display: block;
   margin: auto;
 `;
@@ -76,14 +91,17 @@ const ChBox = styled.div`
 export default function Banner() {
   return (
     <BannerEl>
-      <Title>
-Discover, collect, and sell extraordinary NFTs</Title>
-      <Sub>NFTSpace is the world's first and largest NFT Social Media Platform</Sub>
+      <Content>
+        
+      <Title>Advancing your social life into NFTs</Title>
+      <Sub>
+        NFTSpace is a platform which leverages the power of both worlds. Engage
+        in community interaction while earning through NFTs of your content.
+      </Sub>
       <a href="/register">
-      <Btn>Join</Btn>
+        <Btn>Join</Btn>
       </a>
-   
-    
+      </Content>
     </BannerEl>
   );
 }

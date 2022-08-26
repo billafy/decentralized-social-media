@@ -1,13 +1,15 @@
+@import url("https://rsms.me/inter/inter.css");
+
 * {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
   box-sizing: border-box;
 }
-
-
-
 h1, h2 {
   color: #333333;
 }
-
+a, input, button {
+  outline: none;
+}
 .btn {
   font: inherit;
   padding: 0.5rem 1.5rem;
@@ -18,21 +20,17 @@ h1, h2 {
   border: 1px solid #7B68EE;
   margin: 0 1rem;
 }
-
 .btn:hover {
   background-color: #7B68EE;
   border-color: #7B68EE;
 }
-
 .btn--alt {
   background-color: transparent;
   color: #800040;
 }
-
 .btn--alt:hover {
   background-color: #f8dae9;
 }
-
 .card {
   background-color: white;
   border-radius: 4px;
@@ -40,11 +38,9 @@ h1, h2 {
   padding: 1rem;
   width: 20rem;
 }
-
 .actions {
   text-align: right;
 }
-
 .modal {
   box-shadow: 0 1px 4px #7B68EE;
   border-radius: 6px;
@@ -57,7 +53,6 @@ h1, h2 {
   top: 20vh;
   left: calc(50% - 15rem);
 }
-
 .backdrop {
   position: fixed;
   z-index: 1;
@@ -66,4 +61,7 @@ h1, h2 {
   height: 100vh;
   top: 0;
   left: 0;
+}
+.rWEug {
+  border-radius: 5px !important;
 }
