@@ -41,8 +41,8 @@ def test_duplicate_create_user(social_media):
     prev_user_count = social_media.getUserCount()
     social_media.createUser()
     cur_user_count = social_media.getUserCount()
-    assert prev_user_count == cur_user_count
-
+    assert prev_user_count == cur_user_count 
+    
 
 def test_user_count(social_media):
     prev_user_count = social_media.getUserCount()
@@ -99,7 +99,6 @@ def test_update_about_me(social_media):
     new_about_me = social_media.getAboutMe(accounts[0])
     assert new_about_me == "about me new"
 
-
 def test_update_about_me_too_long(social_media):
     social_media.createUser()
     with brownie.reverts():
@@ -126,5 +125,52 @@ def test_following_follower(social_media):
     prev_follower_no = social_media.getFollowingCount(accounts[1])
     social_media.follow(accounts[0], {"from": accounts[1]})
     new_follow_no = social_media.getFollowerCount(accounts[0])
+    assert social_media.getHasFollowed(accounts[1].address, accounts[0].address)
     assert prev_follow_no == new_follow_no - 1
     assert social_media.getFollowingCount(accounts[1]) == prev_follower_no + 1
+
+def test_emit_followed(social_media):
+    social_media.createUser()
+    social_media.createUser({"from": accounts[1]})
+    txn = social_media.follow(accounts[0], {"from": accounts[1]})
+    event = txn.events["Followed"]
+    assert event['from'] == accounts[1]
+    assert event['to'] == accounts[0]
+
+def test_follow_without_user(social_media):
+    social_media.createUser()
+    with brownie.reverts():
+        social_media.follow(accounts[1], {"from": accounts[0]})
+
+def test_unfollow(social_media):
+    social_media.createUser()
+    social_media.createUser({"from": accounts[1]})
+    social_media.createUser({"from": accounts[2]})
+    prev_follow_no = social_media.getFollowerCount(accounts[0])
+    social_media.follow(accounts[0], {"from": accounts[1]})
+    social_media.follow(accounts[0], {"from": accounts[2]})
+    new_follow_no = social_media.getFollowerCount(accounts[0])
+    txn = social_media.unfollow(accounts[0], {'from': accounts[2]})
+    new_follow_no = social_media.getFollowerCount(accounts[0])
+    assert prev_follow_no == new_follow_no - 1
+    assert txn.events['Unfollowed']['from'] == accounts[2].address
+    txn.events['Unfollowed']['to'] == accounts[0].address
+
+def test_remove_follower(social_media):
+    social_media.createUser()
+    social_media.createUser({"from": accounts[1]})
+    social_media.follow(accounts[0], {"from": accounts[1]})
+    follow_no = social_media.getFollowerCount(accounts[0])
+    txn = social_media.removeFollower(accounts[1], {'from':accounts[0]})
+    new_follow_no = social_media.getFollowerCount(accounts[0])
+    assert follow_no == new_follow_no + 1
+    assert txn.events['FollowerRemoved']['from'] == accounts[1].address
+    assert txn.events['FollowerRemoved']['to'] == accounts[0].address
+
+#Ye add kardena removing follower without the follower actually followed you
+'''def test_remove_follower_not_followed(social_media):
+    social_media.createUser()
+    social_media.createUser({"from": accounts[1]})
+    with brownie.reverts:
+        social_media.removeFollower(accounts[1], {'from':accounts[0]})'''
+

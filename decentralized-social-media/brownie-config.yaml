@@ -11,5 +11,6 @@ networks:
     verify: true
   development:
     verify: false
+  default: local
 wallets: 
   from_key: ${PRIVATE_KEY}
