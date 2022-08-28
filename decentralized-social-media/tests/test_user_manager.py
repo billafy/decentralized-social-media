@@ -22,11 +22,14 @@ def test_constructor_user_count(social_media):
 
 def test_create_user(social_media):
     social_media.createUser()
-    user_exists = social_media.getUserExists(accounts[0])
-    username = social_media.getUsername(accounts[0])
-    about_me = social_media.getAboutMe(accounts[0])
-    followerCount = social_media.getFollowerCount(accounts[0])
-    followingCount = social_media.getFollowingCount(accounts[0])
+    (
+        username,
+        about_me,
+        followerCount,
+        followingCount,
+        follows,
+        user_exists,
+    ) = social_media.getProfile(accounts[0])
     balance = social_media.getBalance()
     assert user_exists
     assert username == "User-0"
@@ -34,6 +37,7 @@ def test_create_user(social_media):
     assert followerCount == 0
     assert followingCount == 0
     assert balance == 0
+    assert not follows
 
 
 def test_duplicate_create_user(social_media):
@@ -126,7 +130,7 @@ def test_following_follower(social_media):
     prev_follower_no = social_media.getFollowingCount(accounts[1])
     social_media.follow(accounts[0], {"from": accounts[1]})
     new_follow_no = social_media.getFollowerCount(accounts[0])
-    assert social_media.getHasFollowed(accounts[1].address, accounts[0].address)
+    assert social_media.getHasFollowed(accounts[0], {"from": accounts[1]})
     assert prev_follow_no == new_follow_no - 1
     assert social_media.getFollowingCount(accounts[1]) == prev_follower_no + 1
 

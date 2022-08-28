@@ -1,11 +1,11 @@
 import styled, { createGlobalStyle } from "styled-components";
-import { Colors } from "../src/components/Theme";
+import { Colors } from "../components/Theme";
 import { useState } from "react";
-import Navbar from "../src/components/Navbar";
-import Button from "../src/components/styled/Button.styled";
-import Page from "../src/components/styled/Page.styled";
-import Footer from "../src/components/Footer";
-import '../src/index.css'
+import Navbar from "../components/Navbar";
+import Button from "../components/styled/Button.styled";
+import Page from "../components/styled/Page.styled";
+import Footer from "../components/Footer";
+import '../styles/index.css'
 import {MoralisProvider} from 'react-moralis';
 
 const GlobalStyle = createGlobalStyle`

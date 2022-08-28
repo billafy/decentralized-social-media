@@ -1,7 +1,7 @@
 import React from "react";
-import Asset from "../src/components/Asset";
-import { Users } from "../src/Info";
-import { NFTs } from "../src/Info";
+import Asset from "../components/Asset";
+import { Users } from "../constants/info";
+import { NFTs } from "../constants/info";
 import { useRouter } from "next/router";
 
 export default function AssetPage() {

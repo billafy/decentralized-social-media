@@ -1,5 +1,5 @@
 import Follow from "./Follow";
-import { Users } from "../Info";
+import { Users } from "../constants/info";
 function Modal(props) {
   function cancelHandler() {
     props.onCancel();

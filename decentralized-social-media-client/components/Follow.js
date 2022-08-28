@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from "styled-components";
-import { Users } from "../Info";
+import { Users } from "../constants/info";
 import Image from 'next/image';
 
 import PropTypes from 'prop-types'

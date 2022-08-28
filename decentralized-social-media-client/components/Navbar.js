@@ -9,6 +9,8 @@ import SearchBarMob from "./Navbar/MobileSearchBar";
 import { useEffect, useState } from "react";
 import { ConnectButton } from "@web3uikit/web3";
 import { useWeb3Contract, useMoralis } from "react-moralis";
+import abi from '../constants/abi.json';
+import addresses from '../constants/addresses.json';
 
 const HeaderEl = styled.header`
 	z-index: 10;
@@ -81,14 +83,33 @@ export default function Navbar({ mobileMenu }) {
 	const { MobileMenuIsOpen, setMobileMenuIsOpen } = mobileMenu;
 	const [SearchIsOpen, setSearchIsOpen] = useState(false);
 	const [showProfileLink, setShowProfileLink] = useState(false);
-	const { isWeb3Enabled } = useMoralis();
+	const { account, isWeb3Enabled } = useMoralis();
 	const { runContractFunction: createUser } = useWeb3Contract({
-		abi: [],
-		contractAddress: "",
+		abi: abi,
+		contractAddress: addresses[process.env.CHAIN_ID] || addresses["1337"],
 		functionName: "createUser",
 	});
+	const { runContractFunction: getProfile } = useWeb3Contract({
+		abi: abi,
+		contractAddress: addresses[process.env.CHAIN_ID] || addresses["1337"],
+		functionName: "getProfile",
+		params: {user: account}
+	});
+
+	const getUserProfile = async () => {
+		let data = await getProfile();
+		if(!data[data.length - 1]) {
+			try {
+				const txn = await createUser();
+				await txn.wait(1);
+				data = await getProfile();
+			} catch {}
+		}
+	};
 
 	useEffect(() => {
+		if(isWeb3Enabled) 
+			getUserProfile();
 		setShowProfileLink(isWeb3Enabled);
 	}, [isWeb3Enabled]);
 

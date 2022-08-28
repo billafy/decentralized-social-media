@@ -17,4 +17,5 @@ load_dotenv()
 
 
 def main():
+    print(accounts[0])
     txn = SocialMedia.deploy((0.001), {"from": accounts[0]})

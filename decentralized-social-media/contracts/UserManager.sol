@@ -134,6 +134,7 @@ contract UserManager {
 
 	/* view functions */
 
+
 	function getUsername(address user) public view returns (string memory) {
 		return s_users[user].username;
 	}
@@ -154,12 +155,23 @@ contract UserManager {
 		return s_users[user].exists;
 	}
 
+	function getHasFollowed(address to) public view returns (bool) {
+		return s_follows[msg.sender][to];
+	}
+
 	function getBalance() public view returns (uint256) {
 		return s_users[msg.sender]._balance;
 	}
 
-	function getHasFollowed(address from, address to) public view returns (bool) {
-		return s_follows[from][to];
+	function getProfile(address user) public view returns (string memory, string memory, uint256, uint256, bool, bool) {
+		return (
+			s_users[user].username, 
+			s_users[user].aboutMe, 
+			s_users[user].followerCount, 
+			s_users[user].followingCount,
+			s_follows[msg.sender][user],
+			s_users[user].exists
+		);
 	}
 
 	function getUserCount() public view returns (uint256) {

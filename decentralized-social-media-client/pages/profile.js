@@ -1,6 +1,6 @@
 import React from "react";
-import Profile from "../src/components/Profile";
-import { Users } from "../src/Info";
+import Profile from "../components/Profile";
+import { Users } from "../constants/info";
 
 const currentUser = Users[0].username;
 const followingList = Users[0].Following;
