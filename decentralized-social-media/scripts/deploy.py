@@ -13,20 +13,39 @@ import os
 import json
 from dotenv import load_dotenv
 from brownie import Wei, accounts, SocialMedia, chain
+import shutil
 
 load_dotenv()
 
 
-def main():
-    txn = SocialMedia.deploy((0.001), {"from": accounts[0]})
-    store_add_abi(txn)
+def clear_development_deployments():
+    if chain.id in ["1337"]:
+        deployments_path = "./build/deployments"
+        for file in os.listdir(deployments_path):
+            try:
+                os.remove(f"{deployments_path}/{file}")
+            except:
+                shutil.rmtree(f"{deployments_path}/{file}")
+
 
 def store_add_abi(txn):
-    jsonify_abi = json.loads(txn.abi)
-    _dict = {}
-    _dict[f"{chain.id}": txn.address]
-    jsonify_address = json.loads(_dict)
-    with open("../../decentralized-social-media-client/constants/abi.json", "w") as abi:
-        json.dump(jsonify_abi, abi)
-    with open("../../decentralized-social-media-client/constants/addresses.json", "w") as add:
-        json.dump(jsonify_address, add)
+    addresses = json.loads(
+        open(
+            "../decentralized-social-media-client/constants/addresses.json", "r"
+        ).read()
+    )
+    if not addresses:
+        addresses = {}
+    addresses[chain.id] = txn.address
+    with open("../decentralized-social-media-client/constants/abi.json", "w") as abi:
+        json.dump(txn.abi, abi, indent=3)
+    with open(
+        "../decentralized-social-media-client/constants/addresses.json", "w"
+    ) as add:
+        json.dump(addresses, add, indent=3)
+
+
+def main():
+    clear_development_deployments()
+    txn = SocialMedia.deploy((0.001), {"from": accounts[0]})
+    store_add_abi(txn)
