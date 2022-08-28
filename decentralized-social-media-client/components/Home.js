@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <HomeEl>
       <Head>
-        <title>NFTSpace</title>
+        <title>ChainSpace</title>
         <meta
           name="description"
           content="Cleaned create-next-app including styled-components and configured theme"

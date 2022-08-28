@@ -54,7 +54,7 @@ export default function Footer() {
         </a>
       </Socials>
       <CopyRight>
-        Copyright &copy; NFTChain
+        Copyright &copy; ChainSpace
       </CopyRight>
       <Links>
         <a href="#">Help Center</a>

@@ -91,7 +91,7 @@ export default function Banner() {
         
       <Title>Advancing your social life into NFTs</Title>
       <Sub>
-        NFTSpace is a platform which leverages the power of both worlds. Engage
+        ChainSpace is a platform which leverages the power of both worlds. Engage
         in community interaction while earning through NFTs of your content.
       </Sub>
       <a href="/register">

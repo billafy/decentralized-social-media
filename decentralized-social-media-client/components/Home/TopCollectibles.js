@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { NFTs } from "../../../constants/info";
+import { NFTs } from "../../constants/info";
 import { Colors, Devices } from "../Theme";
 import Grid from "../styled/Grid.styled";
 import Link from "next/link";

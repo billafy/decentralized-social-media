@@ -26,10 +26,8 @@ const Cover = styled.div`
 	position: relative;
 	width: 100%;
 	text-align: center;
-
 	height: 800px;
 	padding: 100px;
-
 	@media ${Devices.Laptop} {
 		height: 300px;
 	}
@@ -38,9 +36,7 @@ const Content = styled.div`
 	display: flex;
 	flex-direction: column;
 	padding: 20 4rem;
-	gap: 2rem;
 	padding: 20px;
-
 	@media ${Devices.Laptop} {
 		flex-direction: row;
 	}
@@ -79,7 +75,11 @@ const Name = styled.h1`
 const Bio = styled.p`
 	white-space: pre-wrap;
 	font-size: 1rem;
-	margin-bottom: 1rem;
+	margin: auto;
+	margin-bottom: 1.5rem;
+	width: 300px;
+	max-width: 95%;
+	text-align: justify;
 `;
 
 const Stats = styled.div`
@@ -114,7 +114,7 @@ const StatValue = styled.span`
 const AllTabs = [
 	{
 		Id: 1,
-		Title: "Collectibles",
+		Title: "Posts",
 		Content: (
 			<Grid>
 				{NFTs.map((nft) => {
@@ -123,8 +123,7 @@ const AllTabs = [
 			</Grid>
 		),
 	},
-	{ Id: 2, Title: "Selling", Content: <Tab /> },
-	{ Id: 3, Title: "Created", Content: <Tab /> },
+	{ Id: 2, Title: "NFTs On Sale", Content: <Tab /> },
 	{ Id: 4, Title: "Liked", Content: <Tab /> },
 ];
 
@@ -141,7 +140,7 @@ export default function Profile(props) {
 	return (
 		<ProfileEl>
 			<Head>
-				<title>NFTChain - {props.user}</title>
+				<title>ChainSpace - {props.user}</title>
 			</Head>
 			<Cover>
 				<Info>
@@ -158,10 +157,9 @@ export default function Profile(props) {
 					{props.user}
 					<BsFillPatchCheckFill />{" "}
 				</Name>
-				<div style={{ display: "flex", justifyContent: "center" }}>
+				<div style={{ display: "flex", justifyContent: "center", margin: "1.5rem 0px" }}>
 					<Button onClick={openHandler} text="Follow" />
 				</div>
-
 				{modalIsOpen && (
 					<Modal
 						followers={props.followerList}
@@ -187,7 +185,7 @@ export default function Profile(props) {
 					</StatItem>
 					<StatItem>
 						<StatTitle>
-							<a href="www.google.com">Following</a>
+							<a onClick={openHandler}>Following</a>
 						</StatTitle>
 						<StatValue>{props.following}</StatValue>
 					</StatItem>

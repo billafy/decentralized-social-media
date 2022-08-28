@@ -138,7 +138,7 @@ export default function Navbar({ mobileMenu }) {
 			</MenuIcon>
 			<Center>
 				<Logo src="https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png" />
-				<LogoText href="/">NFTSpace</LogoText>
+				<LogoText href="/">ChainSpace</LogoText>
 				<SearchBar />
 				<Nav>
 					<ul>
