@@ -18,4 +18,3 @@ load_dotenv()
 
 def main():
     txn = SocialMedia.deploy((0.001), {"from": accounts[0]})
-    txn.wait(1)

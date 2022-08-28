@@ -8,7 +8,7 @@ import SearchBar from "./Navbar/SearchBar";
 import SearchBarMob from "./Navbar/MobileSearchBar";
 import { useEffect, useState } from "react";
 import { ConnectButton } from "@web3uikit/web3";
-import {useMoralis} from 'react-moralis';
+import { useWeb3Contract, useMoralis } from "react-moralis";
 
 const HeaderEl = styled.header`
 	z-index: 10;
@@ -80,15 +80,16 @@ const MenuIcon = styled(SearchIcon)``;
 export default function Navbar({ mobileMenu }) {
 	const { MobileMenuIsOpen, setMobileMenuIsOpen } = mobileMenu;
 	const [SearchIsOpen, setSearchIsOpen] = useState(false);
-	const {isWeb3Enabled} = useMoralis();
+	const [showProfileLink, setShowProfileLink] = useState(false);
+	const { isWeb3Enabled } = useMoralis();
 	const { runContractFunction: createUser } = useWeb3Contract({
 		abi: [],
-		contractAddress: '',
+		contractAddress: "",
 		functionName: "createUser",
 	});
 
 	useEffect(() => {
-
+		setShowProfileLink(isWeb3Enabled);
 	}, [isWeb3Enabled]);
 
 	function toggleMenu() {
@@ -126,6 +127,9 @@ export default function Navbar({ mobileMenu }) {
 						<li>
 							<NavItem href="/results">Create</NavItem>
 						</li>
+						{showProfileLink && <li>
+							<NavItem href="/profile">Profile</NavItem>
+						</li>}
 						<li>
 							<ConnectButton />
 						</li>

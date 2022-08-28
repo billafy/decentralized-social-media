@@ -1,13 +1,16 @@
 @import url("https://rsms.me/inter/inter.css");
 
 * {
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: "Inter", "Segoe UI", sans-serif;
   box-sizing: border-box;
 }
-h1, h2 {
+h1,
+h2 {
   color: #333333;
 }
-a, input, button {
+a,
+input,
+button {
   outline: none;
 }
 .btn {
@@ -15,14 +18,14 @@ a, input, button {
   padding: 0.5rem 1.5rem;
   cursor: pointer;
   border-radius: 4px;
-  background-color: #7B68EE;
+  background-color: #7b68ee;
   color: white;
-  border: 1px solid #7B68EE;
+  border: 1px solid #7b68ee;
   margin: 0 1rem;
 }
 .btn:hover {
-  background-color: #7B68EE;
-  border-color: #7B68EE;
+  background-color: #7b68ee;
+  border-color: #7b68ee;
 }
 .btn--alt {
   background-color: transparent;
@@ -42,7 +45,7 @@ a, input, button {
   text-align: right;
 }
 .modal {
-  box-shadow: 0 1px 4px #7B68EE;
+  box-shadow: 0 1px 4px #7b68ee;
   border-radius: 6px;
   background-color: white;
   padding: 1rem;

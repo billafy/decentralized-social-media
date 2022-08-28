@@ -12,6 +12,7 @@ error UserManager__UsernameTooShort();
 error UserManager__UsernameTooLong();
 error UserManager__AboutMeTooLong();
 error UserManager__UserDoesNotExist();
+error UserManager__InvalidFollowRequest();
 
 contract UserManager {
 	/* structs */
@@ -94,30 +95,30 @@ contract UserManager {
 	}
 
 	function follow(address user) public userExists(msg.sender) userExists(user) {
-		if(!s_follows[msg.sender][user] && msg.sender != user) {
-			s_follows[msg.sender][user] = true;
-			s_users[msg.sender].followingCount += 1;
-			s_users[user].followerCount += 1;
-			emit Followed(msg.sender, user);
-		}
+		if(s_follows[msg.sender][user] || msg.sender == user) 
+			revert UserManager__InvalidFollowRequest();
+		s_follows[msg.sender][user] = true;
+		s_users[msg.sender].followingCount += 1;
+		s_users[user].followerCount += 1;
+		emit Followed(msg.sender, user);
 	}
 
 	function unfollow(address user) public userExists(msg.sender) userExists(user) {
-		if(s_follows[msg.sender][user]) {
-			delete s_follows[msg.sender][user];
-			s_users[msg.sender].followingCount -= 1;
-			s_users[user].followerCount -= 1;
-			emit Unfollowed(msg.sender, user);
-		}
+		if(!s_follows[msg.sender][user]) 
+			revert UserManager__InvalidFollowRequest();
+		delete s_follows[msg.sender][user];
+		s_users[msg.sender].followingCount -= 1;
+		s_users[user].followerCount -= 1;
+		emit Unfollowed(msg.sender, user);
 	}
 
 	function removeFollower(address user) public userExists(msg.sender) userExists(user) {
-		if(s_follows[user][msg.sender]) {
-			delete s_follows[user][msg.sender];
-			s_users[msg.sender].followerCount -= 1;
-			s_users[user].followingCount -= 1;
-			emit FollowerRemoved(user, msg.sender);
-		}
+		if(!s_follows[user][msg.sender]) 
+			revert UserManager__InvalidFollowRequest();
+		delete s_follows[user][msg.sender];
+		s_users[msg.sender].followerCount -= 1;
+		s_users[user].followingCount -= 1;
+		emit FollowerRemoved(user, msg.sender);
 	}
 
 	function withdraw() public payable userExists(msg.sender) {

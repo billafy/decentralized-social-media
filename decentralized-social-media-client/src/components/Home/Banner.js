@@ -14,7 +14,6 @@ const BannerEl = styled.article`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  padding: 6rem 1rem;
   gap: 1rem;
 
   @media ${Devices.MobileL} {
@@ -30,7 +29,7 @@ const BannerEl = styled.article`
 
 const Content = styled.div`
   background-color: rgba(0, 0, 0, 0.7);
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -39,11 +38,8 @@ const Content = styled.div`
 
 const Title = styled.h2`
   font-weight: 500;
-  font-size: 5vw;
-  @media ${Devices.Laptop} {
-    font-size: 4vw;
-    color: white;
-  }
+  font-size: 4vw;
+  color: white;
 `;
 const Sub = styled.span`
   font-size: 1.12rem;
