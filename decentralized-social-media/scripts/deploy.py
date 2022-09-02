@@ -28,7 +28,7 @@ def clear_development_deployments():
                 shutil.rmtree(f"{deployments_path}/{file}")
 
 
-def store_add_abi(txn):
+def store_add_abi(social_media):
     addresses = json.loads(
         open(
             "../decentralized-social-media-client/constants/addresses.json", "r"
@@ -36,9 +36,9 @@ def store_add_abi(txn):
     )
     if not addresses:
         addresses = {}
-    addresses[chain.id] = txn.address
+    addresses[str(chain.id)] = social_media.address
     with open("../decentralized-social-media-client/constants/abi.json", "w") as abi:
-        json.dump(txn.abi, abi, indent=3)
+        json.dump(social_media.abi, abi, indent=3)
     with open(
         "../decentralized-social-media-client/constants/addresses.json", "w"
     ) as add:
@@ -48,4 +48,5 @@ def store_add_abi(txn):
 def main():
     clear_development_deployments()
     txn = SocialMedia.deploy((0.001), {"from": accounts[0]})
-    store_add_abi(txn)
+    social_media = SocialMedia[-1]
+    store_add_abi(social_media)
