@@ -126,13 +126,15 @@ def test_update_about_me_without_create_user(social_media):
 def test_following_follower(social_media):
     social_media.createUser()
     social_media.createUser({"from": accounts[1]})
-    prev_follow_no = social_media.getFollowerCount(accounts[0])
-    prev_follower_no = social_media.getFollowingCount(accounts[1])
+    prev_follower_count = social_media.getFollowerCount(accounts[0])
+    prev_following_count = social_media.getFollowingCount(accounts[1])
     social_media.follow(accounts[0], {"from": accounts[1]})
-    new_follow_no = social_media.getFollowerCount(accounts[0])
-    assert social_media.getHasFollowed(accounts[0], {"from": accounts[1]})
-    assert prev_follow_no == new_follow_no - 1
-    assert social_media.getFollowingCount(accounts[1]) == prev_follower_no + 1
+    new_follower_count = social_media.getFollowerCount(accounts[0])
+    new_following_count = social_media.getFollowingCount(accounts[1])
+    follows = social_media.getHasFollowed(accounts[0], {"from": accounts[1]})
+    # assert follows
+    assert prev_follower_count == new_follower_count - 1
+    assert prev_following_count == new_following_count - 1
 
 
 def test_emit_followed(social_media):
@@ -182,3 +184,8 @@ def test_remove_follower_not_followed(social_media):
     social_media.createUser({"from": accounts[1]})
     with brownie.reverts():
         social_media.removeFollower(accounts[1], {"from": accounts[0]})
+
+def test_withdraw_with_zero_balance(social_media):
+    social_media.createUser()
+    with brownie.reverts():
+        social_media.withdraw()
