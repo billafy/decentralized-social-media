@@ -16,4 +16,19 @@ const Grid = styled.div`
   }
 `;
 
+export const PostGrid = styled.div`
+  display: grid;
+  margin-top: 1rem;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @media ${Devices.Tablet} {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media ${Devices.Laptop} {
+    grid-template-columns: repeat(3, 1fr);
+  }
+`;
+
 export default Grid;

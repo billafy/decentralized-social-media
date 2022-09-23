@@ -46,6 +46,8 @@ export const NFTs = [
   {
     Id: 1,
     Badge: "Total Sale: $82,571",
+    Floor: 0.65,
+    Top: 0.78,
     ImageUrl: "/images/nft/demon.png",
     Edition: 371,
     Stock: 128,
@@ -61,6 +63,8 @@ export const NFTs = [
   {
     Id: 2,
     Badge: "Total Sale: $82,571",
+    Floor: 0.65,
+    Top: 0.78,
     ImageUrl: "/images/nft/bking.png",
     Edition: 371,
     Stock: 128,
@@ -77,6 +81,8 @@ export const NFTs = [
   {
     Id: 3,
     Badge: "Total Sale: $82,571",
+    Floor: 0.65,
+    Top: 0.78,
     ImageUrl: "/images/nft/crystalrobo.png",
     Edition: 31,
     Stock: 128,
@@ -92,6 +98,8 @@ export const NFTs = [
   {
     Id: 4,
     Badge: "Total Sale: $82,571",
+    Floor: 0.65,
+    Top: 0.78,
     ImageUrl: "/images/nft/rightclicksave.png",
     Edition: 77,
     Stock: 128,
@@ -107,6 +115,8 @@ export const NFTs = [
   {
     Id: 5,
     Badge: "Total Sale: $82,571",
+    Floor: 0.65,
+    Top: 0.78,
     ImageUrl: "/images/nft/cyberjunk.jpeg",
     Edition: 71,
     Stock: 128,
@@ -122,6 +132,8 @@ export const NFTs = [
   {
     Id: 6,
     Badge: "Total Sale: $82,571",
+    Floor: 0.65,
+    Top: 0.78,
     ImageUrl: "/images/nft/lady.jpeg",
     Edition: 10,
     Stock: 128,
@@ -135,6 +147,100 @@ export const NFTs = [
     Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum"`,
   },
 ];
+
+export const PostData = [
+  {
+    Id: 1,
+    Comments: [
+      {
+        Comment_id:1,
+        likes:2,
+        replies: [
+          {}
+        ],
+        Avatar: "/images/avatar/loganpaul.jpeg",
+        Author: "LoganPaul",
+        Comment: "Amazing post. Waiting for the next one!"
+      },
+      {
+        Comment_id:2,
+        likes:2,
+        replies: [
+          {}
+        ],
+        Avatar: "/images/avatar/jakey.jpeg",
+        Author: "JakePaul",
+        Comment: "STUPID FUCKING POST!"
+      },
+      {
+        Comment_id:3,
+        likes:2,
+        replies: [
+          {}
+        ],
+        Avatar: "/images/avatar/jakey.jpeg",
+        Author: "JakePaul",
+        Comment: "CLOWN!"
+      }
+
+    ],
+
+    Avatar: "/images/avatar/loganpaul.jpeg",
+    Author: "LoganPaul",
+    PostImage: "/images/posts/nft.gif",
+    Likes: kFormatter(62465),
+    views: kFormatter(18000),
+    Caption: `This is our first giveaway. Follow to enter the giveaway and like and subscribe`,
+  },
+  {
+    Id: 2,
+    Comments: [
+      {
+        Comment_id:1,
+        likes:2,
+        replies: [
+          {}
+        ],
+        Avatar: "/images/avatar/jakey.jpeg",
+        Author: "JakePaul",
+        Comment: "McDonalds is way better F#*K #*#*@*!"
+      }
+
+    ],
+
+    Avatar: "/images/avatar/loganpaul.jpeg",
+    Author: "LoganPaul",
+    PostImage: "/images/posts/taco.gif",
+    Likes: kFormatter(89925),
+    views: kFormatter(98000),
+    Caption: `This is our new collection "Taco Bell" dropping 18 OCT 12:00PM PST. Limited Edition only 100 pieces. Follow to enter the giveaway and like and subscribe.`,
+  },
+  {
+    Id: 3,
+    Comments: [
+      {
+        Comment_id:1,
+        likes:2,
+        replies: [
+          {}
+        ],
+        Avatar: "/images/avatar/jakey.jpeg",
+        Author: "Jake Paul",
+        Comment: "Amazing post. Waiting for the next one!"
+      }
+
+    ],
+
+    Avatar: "/images/avatar/loganpaul.jpeg",
+    Author: "LoganPaul",
+    PostImage: "/images/posts/ufc.gif",
+    Likes: kFormatter(89925),
+    views: kFormatter(98000),
+    Caption: `UFC Strike NFT Collection. Collect and Relive your favourite UFC moments. Follow to enter the giveaway and like and subscribe.`,
+  },
+  
+];
+
 
 function kFormatter(num) {
   return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)

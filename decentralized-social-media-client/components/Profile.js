@@ -4,11 +4,15 @@ import { Colors, Devices } from "./Theme";
 import { BsInstagram, BsFillPatchCheckFill } from "react-icons/bs";
 import { GrTwitter, GtTwitter } from "react-icons/gr";
 import NFTCard from "./styled/NFTCard.styled";
+import Posts from "./Posts"
 import Grid from "./styled/Grid.styled";
+import { PostGrid } from "./styled/Grid.styled";
 import Head from "next/head";
 import Tabs from "./styled/Tabs.styled";
 import Tab from "./styled/Tab.styled";
+import Edit from "./Edit";
 import { NFTs } from "../constants/info";
+import { PostData } from "../constants/info";
 import { Button } from "@web3uikit/core";
 import { IoPencilSharp } from "react-icons/io5";
 import Link from "next/link";
@@ -24,6 +28,7 @@ const ProfileEl = styled.article`
 	color: ${Colors.Black};
 	display: flex;
 	flex-direction: column;
+	
 `;
 const Cover = styled.div`
 	position: relative;
@@ -121,20 +126,47 @@ const AllTabs = [
 		Id: 1,
 		Title: "Posts",
 		Content: (
-			<Grid>
-				{NFTs.map((nft) => {
-					return <NFTCard key={nft.Id} item={nft} />;
+			<PostGrid>
+				{PostData.map((post) => {
+					return (
+						<Link
+							key={post.Id}
+							href={{ pathname: "/post", query: { id: post.Id } }}
+							passHref
+						>
+							<a>
+							<Posts key={post.Id} item={post}/>
+							</a>
+						</Link>
+					);
 				})}
-			</Grid>
+			</PostGrid>
 		),
 	},
-	{ Id: 2, Title: "NFTs On Sale", Content: <Tab /> },
+	{ Id: 2, Title: "NFTs On Sale", Content: (
+		<Grid>
+			{NFTs.map((nft) => {
+				return (
+					<Link
+						key={nft.Id}
+						href={{ pathname: "/asset", query: { id: nft.Id } }}
+						passHref
+					>
+						<a>
+						<NFTCard key={nft.Id} item={nft} />
+						</a>
+					</Link>
+				);
+			})}
+		</Grid>
+	),},
 	{ Id: 4, Title: "Liked", Content: <Tab /> },
 ];
 
 export default function Profile(props) {
 	const {auth: {loading, userProfile}} = useSelector(state => state);
 	const [modalIsOpen, setModalIsOpen] = useState(false);
+	const [EditmodalIsOpen, setEditModalIsOpen] = useState(false);
 	const router = useRouter();
 	const {isWeb3Enabled} = useMoralis();
 
@@ -142,19 +174,26 @@ export default function Profile(props) {
 		setModalIsOpen(true);
 	}
 
+	function editHandler() {
+		setEditModalIsOpen(true);
+	}
+
 	function closeModalHandler() {
 		setModalIsOpen(false);
 	}
+	function closeEditModalHandler() {
+		setEditModalIsOpen(false);
+	}
 
-	useEffect(() => {
-		if(!isWeb3Enabled && !loading) 
-			router.replace('/');
-	}, [isWeb3Enabled, loading]);
+	// useEffect(() => {
+	// 	if(!isWeb3Enabled && !loading) 
+	// 		router.replace('/');
+	// }, [isWeb3Enabled, loading]);
 
-	if(loading) 
-		return (
-			<p style={{textAlign: 'center', margin: '3rem 0px', fontSize: '3rem'}}>Loading...</p>	
-		);
+	// if(loading) 
+	// 	return (
+	// 		<p style={{textAlign: 'center', margin: '3rem 0px', fontSize: '3rem'}}>Loading...</p>	
+	// 	);
 	return (
 		<ProfileEl>
 			<Head>
@@ -176,7 +215,16 @@ export default function Profile(props) {
 				</Name>
 				<div style={{ display: "flex", justifyContent: "center", margin: "1.5rem 0px" }}>
 					<Button onClick={openHandler} text="Follow" />
+					<Button onClick={editHandler} text="✏️" />
+					
 				</div>
+				{EditmodalIsOpen && (
+					<Edit
+						onCancel={closeEditModalHandler}
+					/>
+				)}
+				{modalIsOpen && <Backdrop onCancel={closeEditModalHandler} />}
+				
 				{modalIsOpen && (
 					<Modal
 						followers={props.followerList}

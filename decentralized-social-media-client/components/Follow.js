@@ -2,6 +2,7 @@ import React from 'react'
 import styled from "styled-components";
 import { Users } from "../constants/info";
 import Image from 'next/image';
+import Link from 'next/link';
 
 import PropTypes from 'prop-types'
 
@@ -26,7 +27,13 @@ const AvatarEl = styled.div`
 
 function Follow(props) {
   return (
-    <AuthorContainer>
+    
+          <Link
+          key={1}
+          href={{ pathname: "/profile", query: { id: 1 } }}
+          passHref
+        >
+          <AuthorContainer>
             <AvatarEl>
               <Image src={props.src} width="50" height="50" />
             </AvatarEl>
@@ -34,6 +41,7 @@ function Follow(props) {
               {props.username}
             </span>
           </AuthorContainer>
+        </Link>
   )
 }
 
