@@ -24,6 +24,7 @@ flist.forEach((id) => {
         Cancel
       </button>
     </div>
+    
   );
 }
 
