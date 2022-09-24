@@ -19,9 +19,11 @@ load_dotenv()
 
 
 def clear_development_deployments():
+    print("clear", chain.id)
     if chain.id in ["1337"]:
         deployments_path = "./build/deployments"
         for file in os.listdir(deployments_path):
+            print(file)
             try:
                 os.remove(f"{deployments_path}/{file}")
             except:
@@ -47,6 +49,6 @@ def store_add_abi(social_media):
 
 def main():
     clear_development_deployments()
-    txn = SocialMedia.deploy((0.001), {"from": accounts[0]})
+    SocialMedia.deploy((0.001), {"from": accounts[0]})
     social_media = SocialMedia[-1]
     store_add_abi(social_media)
