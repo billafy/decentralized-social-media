@@ -2,8 +2,8 @@ import styled from "styled-components";
 import Image from "next/image";
 import { Colors } from "../Theme";
 import { BsHeart } from "react-icons/bs";
-import {getRandomNumber} from '../../utils';
-import styles from "./NFTCard.module.scss";
+import {getRandomNumber,classLister} from '../../utils';
+import styles from "../../styles/NFTCard.module.scss";
 
 const NFTCardEl = styled.article`
 	position: relative;
@@ -93,20 +93,7 @@ const LikesEl = styled.span`
 	}
 `;
 
-const classLister = styleObject => (...classList) =>
-  classList.reduce((list, myClass) => {
-    let output = list;
-    if (styleObject[myClass]) {
-      if (list) output += ' '; // appends a space if list is not empty
-      output += styleObject[myClass]; 
-      //Above: append 'myClass' from styleObject to the list if it is defined
-    }
-    return output;
- }, '');
-
-const classes = classLister(styles); 
-// this creates a function called classes that takes class names as an argument
-// and returns a spaced string of matching classes found in 'styles'
+const classes = classLister(styles);
 
 export default function NFTCard({ item }) {
 	const {

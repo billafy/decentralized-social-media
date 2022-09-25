@@ -1,8 +1,8 @@
-import React from "react";
-import Asset from "../components/Asset";
-import { Users } from "../constants/info";
-import { NFTs } from "../constants/info";
-import { useRouter } from "next/router";
+import React from 'react';
+import Asset from '../components/Asset';
+import { Users } from '../constants/info';
+import { NFTs } from '../constants/info';
+import { useRouter } from 'next/router';
 
 export default function AssetPage() {
 	const router = useRouter();
@@ -15,6 +15,7 @@ export default function AssetPage() {
 	const avi = NFTs[id].Avatar;
 	const editions = NFTs[id].Edition;
 	const desc = NFTs[id].Description;
+
 	return (
 		<Asset
 			title={title}

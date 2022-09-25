@@ -1,17 +1,17 @@
-import styled from "styled-components";
-import { FiMenu } from "react-icons/fi";
-import { CgSearch } from "react-icons/cg";
-import { IoClose } from "react-icons/io5";
-import { Colors, Devices } from "./Theme";
-import Button from "./styled/Button.styled";
-import SearchBar from "./Navbar/SearchBar";
-import SearchBarMob from "./Navbar/MobileSearchBar";
-import { useEffect, useState } from "react";
-import { ConnectButton } from "@web3uikit/web3";
-import { useWeb3Contract, useMoralis } from "react-moralis";
-import abi from "../constants/abi.json";
-import addresses from "../constants/addresses.json";
-import { useDispatch, useSelector } from "react-redux";
+import styled from 'styled-components';
+import { FiMenu } from 'react-icons/fi';
+import { CgSearch } from 'react-icons/cg';
+import { IoClose } from 'react-icons/io5';
+import { Colors, Devices } from '../Theme';
+import Button from '../styled/Button.styled';
+import SearchBar from './SearchBar';
+import MobileSearchBar from './MobileSearchBar';
+import { useEffect, useState } from 'react';
+import { ConnectButton } from '@web3uikit/web3';
+import { useWeb3Contract, useMoralis } from 'react-moralis';
+import abi from '../../constants/abi.json';
+import addresses from '../../constants/addresses.json';
+import { useDispatch, useSelector } from 'react-redux';
 
 const HeaderEl = styled.header`
 	z-index: 10;
@@ -82,24 +82,24 @@ const MenuIcon = styled(SearchIcon)``;
 
 export default function Navbar({ mobileMenu }) {
 	const { MobileMenuIsOpen, setMobileMenuIsOpen } = mobileMenu;
-	const [SearchIsOpen, setSearchIsOpen] = useState(false);
-	const [showProfileLink, setShowProfileLink] = useState(false);
+	const [ SearchIsOpen, setSearchIsOpen ] = useState(false);
+	const [ showProfileLink, setShowProfileLink ] = useState(false);
 	const { account, isWeb3Enabled } = useMoralis();
 	const { runContractFunction: createUser } = useWeb3Contract({
 		abi: abi,
 		contractAddress: addresses[1337],
-		functionName: "createUser",
+		functionName: 'createUser',
 	});
 	const { runContractFunction: getProfile } = useWeb3Contract({
 		abi: abi,
 		contractAddress: addresses[1337],
-		functionName: "getProfile",
+		functionName: 'getProfile',
 		params: { user: account },
 	});
 	const { runContractFunction: getBalance } = useWeb3Contract({
 		abi: abi,
 		contractAddress: addresses[1337],
-		functionName: "getBalance",
+		functionName: 'getBalance',
 	});
 	const dispatch = useDispatch();
 
@@ -116,7 +116,7 @@ export default function Navbar({ mobileMenu }) {
 			console.log(data);
 			const balance = await getBalance();
 			dispatch({
-				type: "SET_PROFILE",
+				type: 'SET_PROFILE',
 				payload: {
 					userProfile: {
 						username: data[0],
@@ -129,13 +129,18 @@ export default function Navbar({ mobileMenu }) {
 					},
 				},
 			});
-		} catch (err) { console.log(err);}
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
-	useEffect(() => {
-		if (isWeb3Enabled) getUserProfile();
-		setShowProfileLink(isWeb3Enabled);
-	}, [isWeb3Enabled]);
+	useEffect(
+		() => {
+			if (isWeb3Enabled) getUserProfile();
+			setShowProfileLink(isWeb3Enabled);
+		},
+		[ isWeb3Enabled ]
+	);
 
 	function toggleMenu() {
 		setMobileMenuIsOpen(!MobileMenuIsOpen);
@@ -144,21 +149,19 @@ export default function Navbar({ mobileMenu }) {
 	return (
 		<HeaderEl>
 			<MenuIcon>
-				{MobileMenuIsOpen ? (
-					<IoClose
-						style={{ fontSize: "2.5rem" }}
-						color={Colors.Primary}
-						onClick={() => {
-							toggleMenu();
-						}}
-					/>
-				) : (
-					<FiMenu
-						onClick={() => {
-							toggleMenu();
-						}}
-					/>
-				)}
+				{MobileMenuIsOpen
+					? <IoClose
+							style={{ fontSize: '2.5rem' }}
+							color={Colors.Primary}
+							onClick={() => {
+								toggleMenu();
+							}}
+						/>
+					: <FiMenu
+							onClick={() => {
+								toggleMenu();
+							}}
+						/>}
 			</MenuIcon>
 			<Center>
 				<Logo src="https://upload.wikimedia.org/wikipedia/en/b/b9/Solana_logo.png" />
@@ -172,25 +175,17 @@ export default function Navbar({ mobileMenu }) {
 						<li>
 							<NavItem href="/results">Create</NavItem>
 						</li>
-						{showProfileLink && (
+						{showProfileLink &&
 							<li>
 								<NavItem href="/profile">Profile</NavItem>
-							</li>
-						)}
+							</li>}
 						<li>
 							<ConnectButton />
 						</li>
 					</ul>
 				</Nav>
 			</Center>
-			{SearchIsOpen ? (
-				<SearchBarMob
-					SearchIsOpen={SearchIsOpen}
-					setSearchIsOpen={setSearchIsOpen}
-				/>
-			) : (
-				""
-			)}
+			{SearchIsOpen ? <MobileSearchBar SearchIsOpen={SearchIsOpen} setSearchIsOpen={setSearchIsOpen} /> : ''}
 			<SearchIcon>
 				<CgSearch
 					onClick={() => {

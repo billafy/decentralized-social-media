@@ -1,22 +1,19 @@
 import styled from "styled-components";
 import Image from "next/image";
-import { Colors, Devices } from "./Theme";
-import { BsInstagram, BsFillPatchCheckFill } from "react-icons/bs";
-import { GrTwitter, GtTwitter } from "react-icons/gr";
-import NFTCard from "./styled/NFTCard.styled";
-import Posts from "./Posts"
-import Grid from "./styled/Grid.styled";
-import { PostGrid } from "./styled/Grid.styled";
+import { Colors, Devices } from "../Theme";
+import NFTCard from "../styled/NFTCard.styled";
+import Posts from "../Posts"
+import Grid from "../styled/Grid.styled";
+import { PostGrid } from "../styled/Grid.styled";
 import Head from "next/head";
-import Tabs from "./styled/Tabs.styled";
-import Tab from "./styled/Tab.styled";
-import Edit from "./Edit";
-import { NFTs } from "../constants/info";
-import { PostData } from "../constants/info";
+import Tabs from "../styled/Tabs.styled";
+import Tab from "../styled/Tab.styled";
+import { NFTs } from "../../constants/info";
+import { PostData } from "../../constants/info";
 import { Button } from "@web3uikit/core";
 import { Blockie } from "@web3uikit/web3";
-import { IoPencilSharp } from "react-icons/io5";
 import Link from "next/link";
+import Edit from "./Edit";
 import Modal from "./Modal";
 import Backdrop from "./Backdrop";
 import { useEffect, useState } from "react";
@@ -29,7 +26,7 @@ const ProfileEl = styled.article`
 	color: ${Colors.Black};
 	display: flex;
 	flex-direction: column;
-	
+
 `;
 const Cover = styled.div`
 	position: relative;
@@ -185,15 +182,16 @@ export default function Profile(props) {
 		setEditModalIsOpen(false);
 	}
 
-	// useEffect(() => {
-	// 	if(!isWeb3Enabled && !loading) 
-	// 		router.replace('/');
-	// }, [isWeb3Enabled, loading]);
+	useEffect(() => {
+		if(!isWeb3Enabled && !loading)
+			router.replace('/');
+	}, [isWeb3Enabled, loading]);
 
-	// if(loading) 
-	// 	return (
-	// 		<p style={{textAlign: 'center', margin: '3rem 0px', fontSize: '3rem'}}>Loading...</p>	
-	// 	);
+	if(loading)
+		return (
+			<p style={{textAlign: 'center', margin: '3rem 0px', fontSize: '3rem'}}>Loading...</p>
+		);
+
 	return (
 		<ProfileEl>
 			<Head>
@@ -217,7 +215,7 @@ export default function Profile(props) {
 				<div style={{ display: "flex", justifyContent: "center", margin: "1.5rem 0px" }}>
 					<Button onClick={openHandler} text="Follow" />
 					<Button onClick={editHandler} text="✏️" />
-					
+
 				</div>
 				{EditmodalIsOpen && (
 					<Edit
@@ -225,7 +223,7 @@ export default function Profile(props) {
 					/>
 				)}
 				{modalIsOpen && <Backdrop onCancel={closeEditModalHandler} />}
-				
+
 				{modalIsOpen && (
 					<Modal
 						followers={props.followerList}
