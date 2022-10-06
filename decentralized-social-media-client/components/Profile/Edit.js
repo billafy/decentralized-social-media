@@ -1,43 +1,49 @@
-import React, { useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Modal } from '@web3uikit/core';
 import { Typography } from '@web3uikit/core';
 import { Users } from '../../constants/info';
-import styled from 'styled-components';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { useWeb3Contract } from 'react-moralis';
+import abi from '../../constants/abi.json';
+import addresses from '../../constants/addresses.json';
+import {TextInput} from './styled/Edit.styled';
 
-const Textinput = styled.input` font-family: "Roboto", sans-serif;
-outline: 0;
-background: #f2f2f2;
-width: 100%;
-border: 0;
-margin: 0 0 15px;
-padding: 15px;
-box-sizing: border-box;
-font-size: 20px;`;
+const Edit = ({ onCancel = () => {} }) => {
+	const dispatch = useDispatch();
+	const { userProfile } = useSelector(state => state.auth);
+	const [ username, setUsername ] = useState(userProfile.username);
+	const [ aboutMe, setAboutMe ] = useState(userProfile.aboutMe);
+	const { runContractFunction: updateUsername } = useWeb3Contract({
+		abi: abi,
+		contractAddress: addresses[1337],
+		functionName: 'updateUsername',
+		params: { username: username.trim() },
+	});
+	const { runContractFunction: updateAboutMe } = useWeb3Contract({
+		abi: abi,
+		contractAddress: addresses[1337],
+		functionName: 'updateAboutMe',
+		params: { aboutMe: aboutMe.trim() },
+	});
 
-export default function Edit(props) {
-	const usernameRef = useRef();
-	const bioRef = useRef();
-	function cancelHandler() {
-		props.onCancel();
-	}
-
-	function submitHandler(event) {
+	const submitHandler = async (event) => {
 		event.preventDefault();
-		const username = usernameRef.current.value;
-		const bio = bioRef.current.value;
-		console.log(username);
-		console.log(bio);
-		const msg = `Profile Details updated! Username : ${username} and  Bio: ${bio}`;
-		console.log(msg);
-		toast(msg);
-		<ToastContainer />;
-	}
-
-	function updatemessage(uname, bio) {
-		const msg = `Details updated to ${uname} and ${bio}`;
-	}
+		if (username.trim().length && username.trim() !== userProfile.username) await updateUsername();
+		if (aboutMe.trim().length && aboutMe.trim() !== userProfile.aboutMe) await updateAboutMe();
+		dispatch({
+			type: 'SET_PROFILE',
+			payload: {
+				userProfile: {
+					...userProfile,
+					username: username.trim(),
+					aboutMe: aboutMe.trim(),
+				},
+			},
+		});
+		toast('Profile Updated!');
+	};
 
 	return (
 		<form className="modal" onSubmit={submitHandler}>
@@ -47,8 +53,8 @@ export default function Edit(props) {
 				isVisible
 				okText="Save Changes"
 				okButtonColor="blue"
-				onCancel={cancelHandler}
-				onCloseButtonPressed={cancelHandler}
+				onCancel={onCancel}
+				onCloseButtonPressed={onCancel}
 				onOk={submitHandler}
 				title={
 					(
@@ -63,13 +69,23 @@ export default function Edit(props) {
 						padding: '20px 0 20px 0',
 					}}
 				>
-
-					<Textinput placeholder="Username" type="text" ref={usernameRef} />
-					<Textinput placeholder="Bio" type="text" ref={bioRef} />
-
+					<TextInput
+						placeholder="Username"
+						type="text"
+						value={username}
+						onChange={({ target: { value } }) => setUsername(value)}
+					/>
+					<TextInput
+						placeholder="About Me"
+						type="text"
+						value={aboutMe}
+						onChange={({ target: { value } }) => setAboutMe(value)}
+					/>
 				</div>
 			</Modal>
 			<ToastContainer />
 		</form>
 	);
-}
+};
+
+export default Edit;

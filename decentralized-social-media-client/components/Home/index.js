@@ -1,6 +1,4 @@
 import Head from 'next/head';
-import styled from 'styled-components';
-import { Colors, Devices } from '../Theme';
 import { BsGithub, BsGlobe } from 'react-icons/bs';
 import Link from 'next/link';
 import Hero from './Hero';
@@ -8,12 +6,9 @@ import Banner from './Banner';
 import Carousel from './Carousel';
 import Video from './Video';
 import TopCollectibles from './TopCollectibles';
+import { HomeEl } from './styled/index.styled';
 
-const HomeEl = styled.article`
-  color: ${Colors.Secondary};
-`;
-
-export default function Home() {
+const Home = () => {
 	return (
 		<HomeEl>
 			<Head>
@@ -26,4 +21,6 @@ export default function Home() {
 			<TopCollectibles />
 		</HomeEl>
 	);
-}
+};
+
+export default Home;

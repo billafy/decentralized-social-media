@@ -17,13 +17,10 @@ import shutil
 
 load_dotenv()
 
-
 def clear_development_deployments():
-    print("clear", chain.id)
-    if chain.id in ["1337"]:
+    if chain.id in [1337]:
         deployments_path = "./build/deployments"
         for file in os.listdir(deployments_path):
-            print(file)
             try:
                 os.remove(f"{deployments_path}/{file}")
             except:

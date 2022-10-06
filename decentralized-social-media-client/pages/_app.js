@@ -94,7 +94,7 @@ const NavItem = styled.a`
 function MyApp({ Component, pageProps }) {
 	const store = useStore(pageProps.initialReduxState);
 	const [MobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
-	
+
 	return (
 		<Provider store={store}>
 			<GlobalStyle />

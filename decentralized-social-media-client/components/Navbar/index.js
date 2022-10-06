@@ -1,9 +1,6 @@
-import styled from 'styled-components';
 import { FiMenu } from 'react-icons/fi';
 import { CgSearch } from 'react-icons/cg';
 import { IoClose } from 'react-icons/io5';
-import { Colors, Devices } from '../Theme';
-import Button from '../styled/Button.styled';
 import SearchBar from './SearchBar';
 import MobileSearchBar from './MobileSearchBar';
 import { useEffect, useState } from 'react';
@@ -12,77 +9,20 @@ import { useWeb3Contract, useMoralis } from 'react-moralis';
 import abi from '../../constants/abi.json';
 import addresses from '../../constants/addresses.json';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+	HeaderEl,
+	Center,
+	LogoText,
+	Logo,
+	Nav,
+	NavItem,
+	SearchIcon,
+	MenuIcon,
+} from './styled/index.styled';
 
-const HeaderEl = styled.header`
-	z-index: 10;
-	display: flex;
-	color: ${Colors.White};
-	width: 100%;
-	align-items: center;
-	height: 10%;
-	gap: 1rem;
-	padding: 1rem 1.5rem;
-	top: 0;
-	background-color: ${Colors.Secondary};
-	position: sticky;
-	svg {
-		font-size: 2rem;
-		cursor: pointer;
-	}
-`;
-
-const Center = styled.div`
-	flex: 1;
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-`;
-
-const LogoText = styled.a`
-	font-size: 1.2rem;
-	font-weight: 500;
-	color: white;
-`;
-
-const Logo = styled.img`
-	width: 75px;
-	padding-right: 1rem;
-`;
-
-const Nav = styled.nav`
-	margin-left: auto;
-	padding-right: 1rem;
-	display: none;
-	ul {
-		display: flex;
-		align-items: center;
-		list-style: none;
-		gap: 1rem;
-	}
-	@media ${Devices.Laptop} {
-		display: block;
-	}
-`;
-
-const NavItem = styled.a`
-	font-size: 1rem;
-	color: white;
-	font-weight: 500;
-`;
-
-const SearchIcon = styled.span`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	@media ${Devices.Laptop} {
-		display: none;
-	}
-`;
-const MenuIcon = styled(SearchIcon)``;
-
-export default function Navbar({ mobileMenu }) {
-	const { MobileMenuIsOpen, setMobileMenuIsOpen } = mobileMenu;
-	const [ SearchIsOpen, setSearchIsOpen ] = useState(false);
+const Navbar = ({mobileMenu}) => {
+	const { isMobileMenuOpen, setIsMobileMenuOpen } = mobileMenu;
+	const [ isSearchOpen, setIsSearchOpen ] = useState(false);
 	const [ showProfileLink, setShowProfileLink ] = useState(false);
 	const { account, isWeb3Enabled } = useMoralis();
 	const { runContractFunction: createUser } = useWeb3Contract({
@@ -106,14 +46,11 @@ export default function Navbar({ mobileMenu }) {
 	const getUserProfile = async () => {
 		try {
 			let data = await getProfile();
-			console.log(data);
 			if (data && data.length && !data[data.length - 1]) {
 				const txn = await createUser();
 				await txn.wait(1);
-				console.log(txn);
 				data = await getProfile();
 			}
-			console.log(data);
 			const balance = await getBalance();
 			dispatch({
 				type: 'SET_PROFILE',
@@ -142,24 +79,20 @@ export default function Navbar({ mobileMenu }) {
 		[ isWeb3Enabled ]
 	);
 
-	function toggleMenu() {
-		setMobileMenuIsOpen(!MobileMenuIsOpen);
-	}
-
 	return (
 		<HeaderEl>
 			<MenuIcon>
-				{MobileMenuIsOpen
+				{isMobileMenuOpen
 					? <IoClose
 							style={{ fontSize: '2.5rem' }}
 							color={Colors.Primary}
 							onClick={() => {
-								toggleMenu();
+								setIsMobileMenuOpen(!isMobileMenuOpen);
 							}}
 						/>
 					: <FiMenu
 							onClick={() => {
-								toggleMenu();
+								setIsMobileMenuOpen(!isMobileMenuOpen);
 							}}
 						/>}
 			</MenuIcon>
@@ -185,14 +118,15 @@ export default function Navbar({ mobileMenu }) {
 					</ul>
 				</Nav>
 			</Center>
-			{SearchIsOpen ? <MobileSearchBar SearchIsOpen={SearchIsOpen} setSearchIsOpen={setSearchIsOpen} /> : ''}
+			{isSearchOpen ? <MobileSearchBar isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} /> : ''}
 			<SearchIcon>
 				<CgSearch
 					onClick={() => {
-						setSearchIsOpen(!SearchIsOpen);
+						setIsSearchOpen(!isSearchOpen);
 					}}
 				/>
 			</SearchIcon>
 		</HeaderEl>
 	);
 }
+export default Navbar;
