@@ -5,48 +5,33 @@ import { Users } from '../../constants/info';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { useWeb3Contract } from 'react-moralis';
 import abi from '../../constants/abi.json';
 import addresses from '../../constants/addresses.json';
-import {TextInput} from './styled/Edit.styled';
+import { TextInput } from './styled/Edit.styled';
+import axios from 'axios';
 
 const Edit = ({ onCancel = () => {} }) => {
 	const dispatch = useDispatch();
 	const { userProfile } = useSelector(state => state.auth);
 	const [ username, setUsername ] = useState(userProfile.username);
 	const [ aboutMe, setAboutMe ] = useState(userProfile.aboutMe);
-	const { runContractFunction: updateUsername } = useWeb3Contract({
-		abi: abi,
-		contractAddress: addresses[1337],
-		functionName: 'updateUsername',
-		params: { username: username.trim() },
-	});
-	const { runContractFunction: updateAboutMe } = useWeb3Contract({
-		abi: abi,
-		contractAddress: addresses[1337],
-		functionName: 'updateAboutMe',
-		params: { aboutMe: aboutMe.trim() },
-	});
 
-	const submitHandler = async (event) => {
+	const submitHandler2 = async event => {
 		event.preventDefault();
-		if (username.trim().length && username.trim() !== userProfile.username) await updateUsername();
-		if (aboutMe.trim().length && aboutMe.trim() !== userProfile.aboutMe) await updateAboutMe();
-		dispatch({
-			type: 'SET_PROFILE',
-			payload: {
-				userProfile: {
-					...userProfile,
-					username: username.trim(),
-					aboutMe: aboutMe.trim(),
-				},
-			},
-		});
-		toast('Profile Updated!');
+		try {
+			const response = await axios.post('/api/user/editProfile', { username: username.trim(), aboutMe: aboutMe.trim() }, {
+				withCredentials: true,
+			});
+			dispatch({ type: 'SET_PROFILE', payload: { userProfile: response.data.user } });
+			toast('Profile Updated');
+		} catch (err) {
+			if(err.response.data.message)
+				toast(err.response.data.message);
+		}
 	};
 
 	return (
-		<form className="modal" onSubmit={submitHandler}>
+		<form className="modal" onSubmit={submitHandler2}>
 			<Modal
 				cancelText="Discard Changes"
 				id="regular"
@@ -55,7 +40,7 @@ const Edit = ({ onCancel = () => {} }) => {
 				okButtonColor="blue"
 				onCancel={onCancel}
 				onCloseButtonPressed={onCancel}
-				onOk={submitHandler}
+				onOk={submitHandler2}
 				title={
 					(
 						<div style={{ display: 'flex', gap: 10 }}>

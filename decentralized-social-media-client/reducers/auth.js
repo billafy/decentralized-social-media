@@ -6,21 +6,26 @@ const initialState = {
 
 const authReducer = (state = initialState, action) => {
 	switch (action.type) {
-		case "SIGN_IN":
+		case 'SIGN_IN':
 			return {
 				...state,
 				isLoading: false,
 				userProfile: action.payload.userProfile,
 				isLoggedIn: true,
 			};
-		case "SIGN_OUT":
+		case 'SIGN_OUT':
 			return {
 				...state,
 				isLoading: true,
 				userProfile: {},
 				isLoggedIn: false,
 			};
-		case "STOP_LOAD":
+		case 'SET_PROFILE':
+			return {
+				...state,
+				userProfile: action.payload.userProfile,
+			};
+		case 'STOP_LOAD':
 			return { ...state, loading: false };
 		default:
 			return state;

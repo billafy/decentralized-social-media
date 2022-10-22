@@ -18,7 +18,7 @@ import shutil
 load_dotenv()
 
 def clear_development_deployments():
-    if chain.id in [1337]:
+    if chain.id in [1337, '1337', 8545, '8545']:
         deployments_path = "./build/deployments"
         for file in os.listdir(deployments_path):
             try:
