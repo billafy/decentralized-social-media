@@ -5,8 +5,10 @@ import { Blockie } from '@web3uikit/web3';
 import Edit from './Edit';
 import Modal from './Modal';
 import Backdrop from './Backdrop';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useMoralis } from 'react-moralis';
+import { useRouter } from 'next/router';
 import { tabs } from './constants';
 import {
 	ProfileEl,
@@ -23,11 +25,20 @@ import {
 } from './styled/index.styled';
 
 const Profile = props => {
-	const { auth: { isLoading, userProfile } } = useSelector(state => state);
+	const router = useRouter();
+	const { auth: { loading, userProfile } } = useSelector(state => state);
 	const [ isModalOpen, setIsModalOpen ] = useState(false);
 	const [ isEditModalOpen, setIsEditModalOpen ] = useState(false);
+	const { account, isWeb3Enabled } = useMoralis();
 
-	if (isLoading) return <p style={{ textAlign: 'center', margin: '3rem 0px', fontSize: '3rem' }}>Loading...</p>;
+	useEffect(
+		() => {
+			if (!isWeb3Enabled && !loading) router.replace('/');
+		},
+		[ isWeb3Enabled, loading ]
+	);
+
+	if (loading) return <p style={{ textAlign: 'center', margin: '3rem 0px', fontSize: '3rem' }}>Loading...</p>;
 	return (
 		<ProfileEl>
 			<Head>
@@ -36,7 +47,7 @@ const Profile = props => {
 			<Cover>
 				<Info>
 					<Avatar>
-						<Blockie seed={userProfile.address} size={40} />
+						<Blockie seed={account} size={40} />
 					</Avatar>
 				</Info>
 				<Name>
@@ -64,13 +75,13 @@ const Profile = props => {
 						<StatTitle>
 							<a onClick={() => setIsModalOpen(true)}>Followers</a>
 						</StatTitle>
-						<StatValue>{userProfile.followers.length}</StatValue>
+						<StatValue>{userProfile.followerCount}</StatValue>
 					</StatItem>
 					<StatItem>
 						<StatTitle>
 							<a onClick={() => setIsModalOpen(true)}>Following</a>
 						</StatTitle>
-						<StatValue>{userProfile.following.length}</StatValue>
+						<StatValue>{userProfile.followingCount}</StatValue>
 					</StatItem>
 				</Stats>
 				<Content>

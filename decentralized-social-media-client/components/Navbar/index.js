@@ -1,82 +1,74 @@
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useAccount, useConnect, useSignMessage, useDisconnect } from 'wagmi';
+import { getSession, signIn, signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import axios from 'axios';
+import SearchBar from './SearchBar';
+import MobileSearchBar from './MobileSearchBar';
 import { FiMenu } from 'react-icons/fi';
 import { CgSearch } from 'react-icons/cg';
 import { IoClose } from 'react-icons/io5';
-import SearchBar from './SearchBar';
-import MobileSearchBar from './MobileSearchBar';
-import { useEffect, useState } from 'react';
-import { ConnectButton } from '@web3uikit/web3';
-import { useWeb3Contract, useMoralis } from 'react-moralis';
-import abi from '../../constants/abi.json';
-import addresses from '../../constants/addresses.json';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-	HeaderEl,
-	Center,
-	LogoText,
-	Logo,
-	Nav,
-	NavItem,
-	SearchIcon,
-	MenuIcon,
-} from './styled/index.styled';
+import { Button } from '@web3uikit/core';
+import { HeaderEl, Center, LogoText, Logo, Nav, NavItem, SearchIcon, MenuIcon } from './styled/index.styled';
 
-const Navbar = ({mobileMenu}) => {
+const Navbar = ({ mobileMenu }) => {
+	const { auth: { isLoggedIn } } = useSelector(state => state);
+	const { connectAsync } = useConnect();
+	const { disconnectAsync } = useDisconnect();
+	const { isConnected } = useAccount();
+	const { signMessageAsync } = useSignMessage();
 	const { isMobileMenuOpen, setIsMobileMenuOpen } = mobileMenu;
 	const [ isSearchOpen, setIsSearchOpen ] = useState(false);
-	const [ showProfileLink, setShowProfileLink ] = useState(false);
-	const { account, isWeb3Enabled } = useMoralis();
-	const { runContractFunction: createUser } = useWeb3Contract({
-		abi: abi,
-		contractAddress: addresses[1337],
-		functionName: 'createUser',
-	});
-	const { runContractFunction: getProfile } = useWeb3Contract({
-		abi: abi,
-		contractAddress: addresses[1337],
-		functionName: 'getProfile',
-		params: { user: account },
-	});
-	const { runContractFunction: getBalance } = useWeb3Contract({
-		abi: abi,
-		contractAddress: addresses[1337],
-		functionName: 'getBalance',
-	});
 	const dispatch = useDispatch();
+	const router = useRouter();
 
-	const getUserProfile = async () => {
+	const handleConnect = async () => {
 		try {
-			let data = await getProfile();
-			if (data && data.length && !data[data.length - 1]) {
-				const txn = await createUser();
-				await txn.wait(1);
-				data = await getProfile();
-			}
-			const balance = await getBalance();
-			dispatch({
-				type: 'SET_PROFILE',
-				payload: {
-					userProfile: {
-						username: data[0],
-						aboutMe: data[1],
-						followerCount: data[2].toString(),
-						followingCount: data[3].toString(),
-						follows: data[4],
-						exists: data[5],
-						balance: balance.toString(),
-					},
-				},
+			const { account, chain } = await connectAsync({ connector: new InjectedConnector() });
+			const { data } = await axios.post('/api/auth/request-message', {
+				address: account,
+				chain: chain.id,
+				network: 'evm',
 			});
+			const message = data.message;
+			const signature = await signMessageAsync({ message });
+			await signIn('credentials', { message, signature, redirect: false });
+			handleUserProfile();
 		} catch (err) {
 			console.log(err);
 		}
 	};
 
+	const handleDisconnect = async () => {
+		await disconnectAsync();
+		await signOut({ redirect: false });
+		handleUserProfile();
+		router.replace('/');
+	};
+
+	const handleUserProfile = async () => {
+		const session = await getSession();
+		if (session) {
+			dispatch({
+				type: 'SIGN_IN',
+				payload: {
+					userProfile: {
+						...session.user,
+						balance: '0',
+					},
+				},
+			});
+		} else
+			dispatch({ type: 'SIGN_OUT' });
+	};
+
 	useEffect(
 		() => {
-			if (isWeb3Enabled) getUserProfile();
-			setShowProfileLink(isWeb3Enabled);
+			handleUserProfile();
 		},
-		[ isWeb3Enabled ]
+		[]
 	);
 
 	return (
@@ -108,13 +100,13 @@ const Navbar = ({mobileMenu}) => {
 						<li>
 							<NavItem href="/results">Create</NavItem>
 						</li>
-						{showProfileLink &&
+						{isLoggedIn &&
 							<li>
 								<NavItem href="/profile">Profile</NavItem>
 							</li>}
-						<li>
-							<ConnectButton />
-						</li>
+						{isLoggedIn
+							? <li><Button onClick={handleDisconnect} text="Disconnect" /></li>
+							: <li><Button onClick={handleConnect} text="Connect" /></li>}
 					</ul>
 				</Nav>
 			</Center>
@@ -128,5 +120,5 @@ const Navbar = ({mobileMenu}) => {
 			</SearchIcon>
 		</HeaderEl>
 	);
-}
+};
 export default Navbar;

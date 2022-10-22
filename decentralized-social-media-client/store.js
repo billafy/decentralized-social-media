@@ -8,7 +8,8 @@ let store;
 export const initialState = {
 	auth: {
 		userProfile: {},
-		loading: true,
+		isLoading: true,
+		isLoggedIn: false,
 	},
 };
 

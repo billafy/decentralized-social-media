@@ -12,10 +12,15 @@
     "@web3uikit/core": "^0.1.5",
     "@web3uikit/icons": "^0.1.5",
     "@web3uikit/web3": "^0.1.5",
+    "axios": "^1.1.2",
     "babel-preset-next": "^1.4.0",
+    "ethers": "^5.7.1",
     "magic-sdk": "^9.0.0",
-    "moralis": "^1.8.0",
+    "mongoose": "^6.6.5",
+    "moralis": "^2.6.4",
+    "moralis-v1": "^1.11.0",
     "next": "^12.0.9",
+    "next-auth": "^4.13.0",
     "next-redux-wrapper": "^7.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -29,7 +34,10 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.1",
     "sass": "^1.54.9",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.3",
+    "unique-names-generator": "^4.7.1",
+    "unique-username-generator": "^1.1.1",
+    "wagmi": "^0.6.8"
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^2.0.2",
