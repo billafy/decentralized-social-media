@@ -19,7 +19,7 @@ const Edit = ({ onCancel = () => {} }) => {
 	const submitHandler2 = async event => {
 		event.preventDefault();
 		try {
-			const response = await axios.post('/api/user/editProfile', { username: username.trim(), aboutMe: aboutMe.trim() }, {
+			const response = await axios.put('/api/user/update', { username: username.trim(), aboutMe: aboutMe.trim() }, {
 				withCredentials: true,
 			});
 			dispatch({ type: 'SET_PROFILE', payload: { userProfile: response.data.user } });
