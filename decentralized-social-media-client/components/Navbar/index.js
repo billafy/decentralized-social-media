@@ -98,7 +98,7 @@ const Navbar = ({ mobileMenu }) => {
 							<NavItem href="/results">Explore</NavItem>
 						</li>
 						<li>
-							<NavItem href="/results">Create</NavItem>
+							<NavItem href="/createpost">Create</NavItem>
 						</li>
 						{isLoggedIn &&
 							<li>

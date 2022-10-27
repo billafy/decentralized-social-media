@@ -25,6 +25,11 @@ const authReducer = (state = initialState, action) => {
 				...state,
 				userProfile: action.payload.userProfile,
 			};
+		case 'SET_POST':
+			return {
+				...state,
+				userProfile: action.payload.userProfile,
+			};
 		case 'STOP_LOAD':
 			return { ...state, loading: false };
 		default:
