@@ -9,14 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@pinata/sdk": "^1.2.1",
     "@web3uikit/core": "^0.1.5",
     "@web3uikit/icons": "^0.1.5",
     "@web3uikit/web3": "^0.1.5",
     "axios": "^1.1.2",
     "babel-preset-next": "^1.4.0",
     "ethers": "^5.7.1",
-    "ipfs-http-client": "^59.0.0",
     "magic-sdk": "^9.0.0",
     "moment": "^2.29.4",
     "mongoose": "^6.6.5",
@@ -41,7 +39,6 @@
     "sass": "^1.54.9",
     "styled-components": "^5.3.3",
     "unique-names-generator": "^4.7.1",
-    "unique-username-generator": "^1.1.1",
     "wagmi": "^0.6.8"
   },
   "devDependencies": {
