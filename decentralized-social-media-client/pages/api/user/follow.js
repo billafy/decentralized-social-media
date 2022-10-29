@@ -25,8 +25,8 @@ const handler = async (req, res) => {
         user.following.push(_id);
         followingUser.followers.push(user._id);
         user = await user.save()
-        followingUser.save();
-        return res.status(201).json({ success: true, message: `Followed user with ID ${_id}`, user });
+        followingUser = await followingUser.save();
+        return res.status(201).json({ success: true, message: `Followed user with ID ${_id}`, user, followingUser });
 	}
 };
 

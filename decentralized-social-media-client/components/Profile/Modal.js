@@ -1,5 +1,4 @@
 import Follow from './Follow';
-import { Users } from '../../constants/info';
 
 const Modal = ({ onCancel = () => {}, followers }) => {
 	return (

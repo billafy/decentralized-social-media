@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { getSession } from 'next-auth/react';
 
 const unfollow = async (req, res) => {
-	if (req.method !== 'DELETE') return res.status(405).json({ success: false, message: 'Method Not Allowed' });
+	if (req.method !== 'PUT') return res.status(405).json({ success: false, message: 'Method Not Allowed' });
 
 	const session = await getSession({ req });
 	if (!session) return res.status(401).json({ success: false });
@@ -18,14 +18,14 @@ const unfollow = async (req, res) => {
 		return res.status(400).json({ success: false, message: `User with ID ${_id} does not exist` });
 	else if (followingUser._id === session.user._id)
 		return res.status(400).json({ success: false, message: 'Cannot unfollow yourself' });
-	else if (!user.following.find(follow => follow._id === _id))
+	else if (!user.following.find(follow => follow._id.toString() === followingUser._id.toString()))
 		return res.status(400).json({ success: false, message: 'Already unfollowed' });
 	else {
-		user.following = user.following.filter(follow => follow._id !== followingUser._id);
-		followingUser.followers = followingUser.followers.filter(follow => follow._id !== user._id);
+		user.following = user.following.filter(follow => follow._id.toString() !== followingUser._id.toString());
+		followingUser.followers = followingUser.followers.filter(follow => follow._id.toString() !== user._id.toString());
 		user = await user.save();
-		followingUser.save();
-		return res.status(201).json({ success: true, message: `Followed user with ID ${_id}`, user });
+		followingUser = await followingUser.save();
+		return res.status(201).json({ success: true, message: `Unfollowed user with ID ${_id}`, user, followingUser });
 	}
 };
 
