@@ -11,10 +11,12 @@ import { FiMenu } from 'react-icons/fi';
 import { CgSearch } from 'react-icons/cg';
 import { IoClose } from 'react-icons/io5';
 import { Button } from '@web3uikit/core';
-import { HeaderEl, Center, LogoText, Logo, Nav, NavItem, SearchIcon, MenuIcon } from './styled/index.styled';
+import { HeaderEl, Center, LogoText, Logo, Nav, SearchIcon, MenuIcon } from './styled/index.styled';
+import Link from 'next/link';
+import { Colors } from '../Theme';
 
 const Navbar = ({ mobileMenu }) => {
-	const { auth: { isLoggedIn } } = useSelector(state => state);
+	const { auth: { userProfile, isLoggedIn } } = useSelector(state => state);
 	const { connectAsync } = useConnect();
 	const { disconnectAsync } = useDisconnect();
 	const { isConnected } = useAccount();
@@ -77,12 +79,13 @@ const Navbar = ({ mobileMenu }) => {
 				{isMobileMenuOpen
 					? <IoClose
 							style={{ fontSize: '2.5rem' }}
-							color={Colors.Primary}
+							color={Colors.Background}
 							onClick={() => {
 								setIsMobileMenuOpen(!isMobileMenuOpen);
 							}}
 						/>
 					: <FiMenu
+							color={Colors.Background}
 							onClick={() => {
 								setIsMobileMenuOpen(!isMobileMenuOpen);
 							}}
@@ -95,14 +98,15 @@ const Navbar = ({ mobileMenu }) => {
 				<Nav>
 					<ul>
 						<li>
-							<NavItem href="/results">Explore</NavItem>
+							<Link href="">Explore</Link>
 						</li>
 						<li>
-							<NavItem href="/createpost">Create</NavItem>
+							{isLoggedIn && <Link href="/createPost">Create</Link>}
 						</li>
 						{isLoggedIn &&
+							userProfile &&
 							<li>
-								<NavItem href="/profile">Profile</NavItem>
+								<Link href={{ pathname: '/profile', query: { id: userProfile._id.toString() } }}>My Profile</Link>
 							</li>}
 						{isLoggedIn
 							? <li><Button onClick={handleDisconnect} text="Disconnect" /></li>
@@ -113,6 +117,7 @@ const Navbar = ({ mobileMenu }) => {
 			{isSearchOpen ? <MobileSearchBar isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} /> : ''}
 			<SearchIcon>
 				<CgSearch
+					color={Colors.Background}
 					onClick={() => {
 						setIsSearchOpen(!isSearchOpen);
 					}}

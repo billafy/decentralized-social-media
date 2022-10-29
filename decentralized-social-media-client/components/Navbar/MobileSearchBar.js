@@ -6,7 +6,7 @@ const MobileSearchBar = ({ setIsSearchOpen }) => {
 		<SearchBarEl>
 			<SearchBarBg>
 				<CgSearch />
-				<SearchInput placeholder="Search collectibles and collections" />
+				<SearchInput placeholder="Search users, posts and NFTs" />
 			</SearchBarBg>
 			<HideSearchBar
 				onClick={() => {

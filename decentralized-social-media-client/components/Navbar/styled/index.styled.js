@@ -47,15 +47,12 @@ export const Nav = styled.nav`
 		list-style: none;
 		gap: 1rem;
 	}
+	a {
+		color: white;
+	}
 	@media ${Devices.Laptop} {
 		display: block;
 	}
-`;
-
-export const NavItem = styled.a`
-	font-size: 1rem;
-	color: white;
-	font-weight: 500;
 `;
 
 export const SearchIcon = styled.span`

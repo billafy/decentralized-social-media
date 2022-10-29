@@ -1,13 +1,13 @@
-import styled from "styled-components";
-import { useState } from "react";
-import { Colors, Devices } from "../Theme";
-import GridTmp from "./Grid.styled";
+import styled from 'styled-components';
+import { useState } from 'react';
+import { Colors, Devices } from '../Theme';
+import GridTmp from './Grid.styled';
 
 const TabsEl = styled.article`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: ${(p) => (p.mt ? p.mt : "")};
+  margin-top: ${p => p.mt ? p.mt : ''};
 `;
 const Headers = styled.div`
   display: flex;
@@ -27,7 +27,7 @@ const Header = styled.span`
     transition: all 0.3s ease-in-out;
     left: 0;
     bottom: 0;
-    width: ${(p) => (p.active ? "100%" : "0")};
+    width: ${p => p.active ? '100%' : '0'};
     height: 0.2rem;
     background: linear-gradient(
       to right,
@@ -43,25 +43,25 @@ const Content = styled.div`
 `;
 
 export default function Tabs({ data, mt }) {
-  const [CurTab, setCurTab] = useState(data[0]);
-  return (
-    <TabsEl mt={mt}>
-      <Headers>
-        {data.map((d) => {
-          return (
-            <Header
-              onClick={() => {
-                if (CurTab.Id !== d.Id) setCurTab(d);
-              }}
-              key={d.Id}
-              active={CurTab.Id === d.Id}
-            >
-              {d.Title}
-            </Header>
-          );
-        })}
-      </Headers>
-      <Content>{CurTab.Content}</Content>
-    </TabsEl>
-  );
+	const [ curTab, setCurTab ] = useState(data[0]);
+	return (
+		<TabsEl mt={mt}>
+			<Headers>
+				{data.map(d => {
+					return (
+						<Header
+							onClick={() => {
+								if (curTab.id !== d.id) setCurTab(d);
+							}}
+							key={d.id}
+							active={curTab.id === d.id}
+						>
+							{d.title}
+						</Header>
+					);
+				})}
+			</Headers>
+			<Content>{curTab.content}</Content>
+		</TabsEl>
+	);
 }

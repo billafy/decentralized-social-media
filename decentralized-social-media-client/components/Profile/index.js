@@ -7,7 +7,13 @@ import Modal from './Modal';
 import Backdrop from './Backdrop';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { tabs } from './constants';
+import { PostGrid } from '../styled/Grid.styled';
+import Grid from '../styled/Grid.styled';
+import { NFTs } from '../../constants/info';
+import Link from 'next/link';
+import NFTCard from '../styled/NFTCard.styled';
+import Tab from '../styled/Tab.styled';
+import Posts from '../Posts';
 import {
 	ProfileEl,
 	Cover,
@@ -22,10 +28,32 @@ import {
 	StatTitle
 } from './styled/index.styled';
 
-const Profile = props => {
+const Profile = ({ user, posts }) => {
 	const { auth: { isLoading, userProfile } } = useSelector(state => state);
 	const [ isModalOpen, setIsModalOpen ] = useState(false);
 	const [ isEditModalOpen, setIsEditModalOpen ] = useState(false);
+
+	const tabs = [
+		{
+			id: 1,
+			title: 'Posts',
+			content: (
+				<PostGrid>
+					{posts.map((post, i) => {
+						return (
+							<Link key={i} href={{ pathname: '/post', query: { id: post._id.toString() } }} passHref>
+								<a>
+									<Posts key={post._id.toString()} post={post} />
+								</a>
+							</Link>
+						);
+					})}
+				</PostGrid>
+			),
+		},
+		{ id: 2, title: 'NFTs On Sale', content: <Tab /> },
+		{ id: 3, title: 'Liked', content: <Tab /> },
+	];
 
 	if (isLoading) return <p style={{ textAlign: 'center', margin: '3rem 0px', fontSize: '3rem' }}>Loading...</p>;
 	return (
@@ -36,41 +64,41 @@ const Profile = props => {
 			<Cover>
 				<Info>
 					<Avatar>
-						<Blockie seed={userProfile.address} size={40} />
+						<Blockie seed={user.address} size={40} />
 					</Avatar>
 				</Info>
 				<Name>
-					{userProfile.username}
+					{user.username}
+					{user._id === userProfile._id && <Button onClick={() => setIsEditModalOpen(true)} text="✏️" />}
 				</Name>
 				<div style={{ display: 'flex', justifyContent: 'center', margin: '1.5rem 0px', gap: '0.5rem' }}>
 					<Button onClick={() => setIsModalOpen(true)} text="Follow" />
-					<Button onClick={() => setIsEditModalOpen(true)} text="✏️" />
 				</div>
 				{isEditModalOpen && <Edit onCancel={() => setIsEditModalOpen(false)} />}
-				{isModalOpen && <Backdrop onCancel={() => setIsEditModalOpen(false)} />}
-				{isModalOpen && <Modal followers={props.followerList} onCancel={() => setIsModalOpen(false)} />}
+				{isEditModalOpen && <Backdrop onCancel={() => setIsEditModalOpen(false)} />}
+				{isModalOpen && <Modal followers={user.followers} onCancel={() => setIsModalOpen(false)} />}
 				{isModalOpen && <Backdrop onCancel={() => setIsModalOpen(false)} />}
-				<Bio>{userProfile.aboutMe}</Bio>
+				<Bio>{user.aboutMe}</Bio>
 				<Stats>
 					<StatItem>
 						<StatTitle>Likes</StatTitle>
-						<StatValue>{props.likes}</StatValue>
+						<StatValue>0</StatValue>
 					</StatItem>
 					<StatItem>
 						<StatTitle>Earnings</StatTitle>
-						<StatValue>{userProfile.balance} ETH</StatValue>
+						<StatValue>0 ETH</StatValue>
 					</StatItem>
 					<StatItem>
 						<StatTitle>
 							<a onClick={() => setIsModalOpen(true)}>Followers</a>
 						</StatTitle>
-						<StatValue>{userProfile.followers.length}</StatValue>
+						<StatValue>{user.followers.length}</StatValue>
 					</StatItem>
 					<StatItem>
 						<StatTitle>
 							<a onClick={() => setIsModalOpen(true)}>Following</a>
 						</StatTitle>
-						<StatValue>{userProfile.following.length}</StatValue>
+						<StatValue>{user.following.length}</StatValue>
 					</StatItem>
 				</Stats>
 				<Content>

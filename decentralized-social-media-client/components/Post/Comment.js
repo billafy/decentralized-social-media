@@ -1,23 +1,25 @@
 import React from 'react';
 import styles from '../../styles/Comment.module.css';
-import {classLister} from '../../utils';
+import { Blockie } from '@web3uikit/web3';
+import { classLister } from '../../utils';
+import Moment from 'react-moment';
 
 const classes = classLister(styles);
 
-export default function Comment(props) {
+export default function Comment({comment}) {
 	return (
 		<div className={classes('comment')}>
 			<div className={classes('profıle-ımage')}>
-				<img className={classes('avatar')} src={props.avi} />
+				<Blockie  seed={comment.user.address} size={12.5} />
 			</div>
-
 			<div className={classes('user-comment')}>
-				<a className={classes('time')}>5 days ago</a>
-				<div className={classes('username')}>{props.auth}</div>
-				<p>{props.comment}</p>
-
-				<div />
-
+				<a className={classes('time')}>
+					<Moment fromNow>
+						{comment.createdAt}
+					</Moment>
+				</a>
+				<div className={classes('username')}>{comment.user.username}</div>
+				<p>{comment.text}</p>
 			</div>
 		</div>
 	);

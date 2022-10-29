@@ -20,10 +20,6 @@ const Card = styled.div`
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	box-shadow: box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;;
-	:hover {
-		transform: translate(-10px, -20px) rotate(-3deg) scale(1.03);
-	}
 `;
 
 const BadgeEl = styled.span`

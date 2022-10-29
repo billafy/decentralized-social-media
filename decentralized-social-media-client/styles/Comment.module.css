@@ -15,8 +15,8 @@
 
 .comment .profıle-ımage{
   float:left;
-  width:60px;
-  height:60px;
+  width:50px;
+  height:50px;
   margin:6px 0px 0px 6px;
   background:white;
   border-radius:300px;
@@ -33,7 +33,7 @@
   margin:0px;
   padding-top:15px;
   text-align:center;
-  
+
 }
 
 .comment .username{
@@ -46,7 +46,7 @@
   float:right;
   color:#212121;
   font-size:12px;
-  
+
   padding:10px;
 }
 

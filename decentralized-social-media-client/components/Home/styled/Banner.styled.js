@@ -8,7 +8,7 @@ export const BannerEl = styled.article`
 	text-align: center;
 	background: url("https://wallpapercave.com/wp/wp5910898.jpg");
 	background: url("https://advertisingweek.com/wp-content/uploads/2022/02/169the-smart-city-of-cyberspace-and-metaverse-digital-data-of-futuristic-picture-id1357404897-1170x600.jpg");
-	background: url("https://coinchapter.com/wp-content/uploads/2022/03/Metaverse.jpg");
+	background: url("/images/Metaverse.jpg");
 	background-size: 100% 100%;
 	background-size: cover;
 	background-position: center;

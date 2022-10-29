@@ -1,12 +1,34 @@
-import styled from 'styled-components';
 import Image from 'next/image';
-import { Colors, Devices } from '../Theme';
 import { IoIosHeart, IoIosSend, IoIosBookmark, IoIosHappy } from 'react-icons/io';
 import { BsHeart, BsFillEyeFill, BsThreeDots } from 'react-icons/bs';
 import Comment from './Comment';
 import Head from 'next/head';
 import { PostData } from '../../constants/info';
 import AddComment from './AddComment';
+import { Blockie } from '@web3uikit/web3';
+import Moment from 'react-moment';
+// import {
+//     PostEl,
+//     SectionContainer,
+//     LeftSection,
+//     RightSection,
+//     AuthorContainer,
+//     AvatarEl,
+//     TimeLabel,
+//     UsernameEl,
+//     Title,
+//     Likes,
+//     LikesEl,
+//     ImageEl,
+//     Des,
+//     Interact,
+//     Share,
+//     ShareLeft,
+//     ShareRight
+// } from './styled/index.styled';
+
+import styled from 'styled-components';
+import { Colors, Devices } from '../Theme';
 
 const PostEl = styled.article`
   background-color: ${Colors.Primary};
@@ -14,7 +36,6 @@ const PostEl = styled.article`
   padding: 1rem;
   display: flex;
   flex-direction: column;
-
   @media ${Devices.Laptop} {
     padding: 1rem 15%;
   }
@@ -23,7 +44,6 @@ const SectionContainer = styled.div`
   display: flex;
   margin-top: 40px;
   gap: 2rem;
-  flex-direction: column;
   @media ${Devices.Laptop} {
     flex-direction: row;
   }
@@ -31,19 +51,19 @@ const SectionContainer = styled.div`
 
 const LeftSection = styled.div`
   display: flex;
-  flex: 0.7rem;
+  flex: 0.75rem;
   flex-direction: column;
   gap: 1rem;
 `;
 const ImageEl = styled.div`
-  overflow: hidden;
+    overflow: hidden;
 `;
 
 const RightSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  flex: 0.95;
+  flex: 1;
 `;
 
 const AuthorContainer = styled.div`
@@ -59,7 +79,6 @@ const AuthorContainer = styled.div`
 `;
 const AvatarEl = styled.div`
   border-radius: 50%;
-  overflow: hidden;
   width: 50px;
   height: 50px;
 `;
@@ -83,7 +102,7 @@ margin-left: 6.875rem;
 
 const LikesEl = styled.span`padding:10px;`;
 
-const Des = styled.p`
+const Des = styled.div`
   white-space: pre-wrap;
 `;
 
@@ -116,15 +135,15 @@ font-size: 2.4rem;
     color: #ee83e5;
   }`;
 
-export default function Post(props) {
-	const commentData = PostData[props.id].Comments;
+
+export default function Post({post}) {
 	return (
 		<PostEl>
 			<Head>Post</Head>
 			<SectionContainer>
 				<LeftSection>
 					<ImageEl>
-						<Image src={props.img} layout="responsive" width="1000px" height="1000px" />
+						<Image src={post.mediaUrl} layout="responsive" width="1000px" height="1000px" />
 					</ImageEl>
 					<Interact>
 						<Share>
@@ -137,30 +156,33 @@ export default function Post(props) {
 				<RightSection>
 					<AuthorContainer>
 						<AvatarEl>
-							<Image src={props.avatar} width="50" height="50" />
+                            <Blockie seed={post.user.address} size={12.5} />
 						</AvatarEl>
-						<span>
-							<TimeLabel>5m ago</TimeLabel>
-							<UsernameEl>{props.author}</UsernameEl>
-						</span>
-						<TimeLabel>29th Aug 12:00</TimeLabel>
+						<div style={{display: 'inline'}}>
+							<TimeLabel>
+                                <Moment fromNow>{post.createdAt}</Moment>
+                            </TimeLabel>
+							<UsernameEl>{post.user.username}</UsernameEl>
+						</div>
+						<TimeLabel>
+                            <Moment format="D MMM YYYY" withTitle>
+                                {post.createdAt}
+                            </Moment>
+                        </TimeLabel>
 					</AuthorContainer>
-					<span>
-						<Title>{props.caption}</Title>
-					</span>
-					<Likes>
-						<LikesEl><BsHeart /> {props.likes}</LikesEl>
-						<LikesEl><BsFillEyeFill /> {props.views}</LikesEl>
-
-					</Likes>
-					<Des>
-						{commentData.map(com => {
-							return <Comment comment={com.Comment} auth={com.Author} avi={com.Avatar} />;
-						})}
-
-						<AddComment />
-					</Des>
-
+					<div style={{display: 'inline'}}>
+						<Title>{post.description}</Title>
+					</div>
+                    <Likes>
+                        <LikesEl><BsHeart /> {post.likes}</LikesEl>
+                        <LikesEl><BsFillEyeFill />0</LikesEl>
+                    </Likes>
+                    <Des>
+                        {post.comments.map(comment => {
+                            return <Comment comment={comment}/>;
+                        })}
+                        <AddComment />
+                    </Des>
 				</RightSection>
 			</SectionContainer>
 		</PostEl>

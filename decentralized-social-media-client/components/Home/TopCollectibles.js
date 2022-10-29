@@ -7,7 +7,7 @@ import { TopCollectiblesEl, Title, TopSection, Sort, Date, ShowMore } from './st
 const TopCollectibles = () => {
 	return (
 		<TopCollectiblesEl>
-			<Title>Top Collectibles</Title>
+			<Title>Top NFTs</Title>
 			<Grid>
 				{NFTs.map(nft => {
 					return (

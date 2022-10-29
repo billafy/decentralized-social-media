@@ -7,7 +7,7 @@ const SearchBar = () => {
 			<a href="/results">
 				<CgSearch />
 			</a>
-			<SearchInput placeholder="Search collections" />
+			<SearchInput placeholder="Search users, posts and NFTs" />
 		</SearchBarEl>
 	);
 }

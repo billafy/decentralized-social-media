@@ -1,34 +1,37 @@
-import React from 'react';
 import Post from '../components/Post';
-import { Users } from '../constants/info';
-import { PostData } from '../constants/info';
-import { useRouter } from 'next/router';
 
-export default function PostPage() {
-	const router = useRouter();
-	const id = router.query.id - 1;
-	const img = PostData[id].PostImage;
-	const caption = PostData[id].Caption;
-	const author = PostData[id].Author;
-	const likes = PostData[id].Likes;
-	const views = PostData[id].views;
-	const avi = PostData[id].Avatar;
-	const commentData = PostData[id].Comments[0].Comment;
-	const commentauth = PostData[id].Comments[0].Author;
-	const commentavi = PostData[id].Comments[0].Avatar;
+const PostPage = ({ post }) => {
+	if (!post) return <p>Loading...</p>;
+	return <Post post={post} />;
+};
 
-	return (
-		<Post
-			comments={commentData}
-			commentauth={commentauth}
-			commentavi={commentavi}
-			id={id}
-			img={img}
-			caption={caption}
-			likes={likes}
-			views={views}
-			author={author}
-			avatar={avi}
-		/>
-	);
+export async function getServerSideProps({ query }) {
+	const mongoose = (await import('mongoose')).default;
+	const PostSchema = (await import('../models/Post')).default;
+
+	try {
+		await mongoose.connect(process.env.MONGO_URI);
+		const post = await PostSchema.findById(query.id, { updatedAt: 0, __v: 0 })
+			.populate('user', [ 'username', 'address' ])
+			.populate({
+				path: 'comments',
+				select: [ 'likes', 'text', 'user', 'createdAt' ],
+				populate: {
+					path: 'user',
+					select: [ 'username', 'address' ],
+				},
+			})
+			.exec();
+		if (!post) throw 'Not Found';
+		return {
+			props: { post: JSON.parse(JSON.stringify(post)) },
+		};
+	} catch (err) {
+		console.log(err);
+		return {
+			notFound: true,
+		};
+	}
 }
+
+export default PostPage;

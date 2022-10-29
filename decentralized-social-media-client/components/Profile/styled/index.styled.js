@@ -10,10 +10,11 @@ export const ProfileEl = styled.article`
 `;
 export const Cover = styled.div`
 	position: relative;
-	width: 100%;
+	width: min(1350px, 100%);
 	text-align: center;
 	height: 800px;
-	padding: 100px;
+	padding: 1.5rem;
+	margin: 100px auto;
 	@media ${Devices.Laptop} {
 		height: 300px;
 	}
@@ -55,6 +56,12 @@ export const Name = styled.h1`
 	margin-top: -50px;
 	margin-bottom: 0.5rem;
 	color: ${Colors.Secondary};
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	text-align: center;
+	width: 100%;
 `;
 
 export const Bio = styled.p`
