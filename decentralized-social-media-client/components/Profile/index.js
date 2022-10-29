@@ -37,7 +37,7 @@ const Profile = ({ user, posts }) => {
 		{
 			id: 1,
 			title: 'Posts',
-			content: (
+			content: posts.length ? (
 				<PostGrid>
 					{posts.map((post, i) => {
 						return (
@@ -49,7 +49,7 @@ const Profile = ({ user, posts }) => {
 						);
 					})}
 				</PostGrid>
-			),
+			) : <Tab/>,
 		},
 		{ id: 2, title: 'NFTs On Sale', content: <Tab /> },
 		{ id: 3, title: 'Liked', content: <Tab /> },
