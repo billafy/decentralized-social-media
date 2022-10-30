@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const AuthorContainer = styled.div`
+export const AuthorContainer = styled.div`
   display: flex;
   gap: 0.5rem;
   background-color: #F8F8FF;
@@ -12,7 +12,8 @@ const AuthorContainer = styled.div`
     gap: 0.25rem;
   }
 `;
-const AvatarEl = styled.div`
+
+export const AvatarEl = styled.div`
   border-radius: 50%;
   overflow: hidden;
   width: 50px;

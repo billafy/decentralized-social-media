@@ -7,6 +7,7 @@ import { PostData } from '../../constants/info';
 import AddComment from './AddComment';
 import { Blockie } from '@web3uikit/web3';
 import Moment from 'react-moment';
+import Link from 'next/link';
 // import {
 //     PostEl,
 //     SectionContainer,
@@ -162,7 +163,11 @@ export default function Post({post}) {
 							<TimeLabel>
                                 <Moment fromNow>{post.createdAt}</Moment>
                             </TimeLabel>
-							<UsernameEl>{post.user.username}</UsernameEl>
+							<UsernameEl>
+                                <Link href={{ pathname: '/profile', query: { id: post.user._id.toString() } }} passHref>
+                                    {post.user.username}
+                                </Link>
+                            </UsernameEl>
 						</div>
 						<TimeLabel>
                             <Moment format="D MMM YYYY" withTitle>

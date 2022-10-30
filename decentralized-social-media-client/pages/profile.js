@@ -1,13 +1,8 @@
-import Profile from "../components/Profile";
+import Profile from '../components/Profile';
 
-const ProfilePage = ({user, posts}) => {
-	return (
-		<Profile
-			user={user}
-			posts={posts}
-		/>
-	);
-}
+const ProfilePage = ({ user, posts }) => {
+	return <Profile user={user} posts={posts} />;
+};
 
 export async function getServerSideProps({ query }) {
 	const mongoose = (await import('mongoose')).default;
@@ -18,10 +13,14 @@ export async function getServerSideProps({ query }) {
 	await mongoose.connect(process.env.MONGO_URI);
 
 	try {
-		const user = await UserSchema.findById(query.id, { updatedAt: 0, __v: 0, profileId: 0}).exec();
+		const user = await UserSchema.findById(query.id, { updatedAt: 0, __v: 0, profileId: 0 })
+			.populate('followers', [ 'username', 'address' ])
+			.populate('following', [ 'username', 'address' ])
+			.exec();
 		if (!user) throw 'Not Found';
-		const posts = await PostSchema.find({user: user._id}, { updatedAt: 0, __v: 0, comments: 0, likes: 0, description: 0 })
-			.populate('user', {createdAt: 0, updatedAt: 0, __v: 0, profileId: 0})
+		const posts = await PostSchema
+			.find({ user: user._id }, { updatedAt: 0, __v: 0, comments: 0, likes: 0, description: 0 })
+			.populate('user', { createdAt: 0, updatedAt: 0, __v: 0, profileId: 0 })
 			.exec();
 		return {
 			props: { user: JSON.parse(JSON.stringify(user)), posts: JSON.parse(JSON.stringify(posts)) },

@@ -32,7 +32,8 @@ import {
 const Profile = ({ user, posts }) => {
 	const dispatch = useDispatch();
 	const { auth: { isLoggedIn, isLoading, userProfile } } = useSelector(state => state);
-	const [ isModalOpen, setIsModalOpen ] = useState(false);
+	const [ isFollowersModalOpen, setIsFollowersModalOpen ] = useState(false);
+	const [ isFollowingModalOpen, setIsFollowingModalOpen ] = useState(false);
 	const [ isEditModalOpen, setIsEditModalOpen ] = useState(false);
 	const [profile, setProfile] = useState(user);
 
@@ -106,8 +107,10 @@ const Profile = ({ user, posts }) => {
 				</div>
 				{isEditModalOpen && <Edit onCancel={() => setIsEditModalOpen(false)} />}
 				{isEditModalOpen && <Backdrop onCancel={() => setIsEditModalOpen(false)} />}
-				{isModalOpen && <Modal followers={profile.followers} onCancel={() => setIsModalOpen(false)} />}
-				{isModalOpen && <Backdrop onCancel={() => setIsModalOpen(false)} />}
+				{isFollowersModalOpen && <Modal list={profile.followers} onCancel={() => setIsFollowersModalOpen(false)} title='Followers' />}
+				{isFollowersModalOpen && <Backdrop onCancel={() => setIsFollowersModalOpen(false)} />}
+				{isFollowingModalOpen && <Modal list={profile.following} onCancel={() => setIsFollowingModalOpen(false)} title='Following' />}
+				{isFollowingModalOpen && <Backdrop onCancel={() => setIsFollowingModalOpen(false)} />}
 				<Bio>{profile.aboutMe}</Bio>
 				<Stats>
 					<StatItem>
@@ -120,13 +123,13 @@ const Profile = ({ user, posts }) => {
 					</StatItem>
 					<StatItem>
 						<StatTitle>
-							<a onClick={() => setIsModalOpen(true)}>Followers</a>
+							<a onClick={() => setIsFollowersModalOpen(true)}>Followers</a>
 						</StatTitle>
 						<StatValue>{profile.followers.length}</StatValue>
 					</StatItem>
 					<StatItem>
 						<StatTitle>
-							<a onClick={() => setIsModalOpen(true)}>Following</a>
+							<a onClick={() => setIsFollowingModalOpen(true)}>Following</a>
 						</StatTitle>
 						<StatValue>{profile.following.length}</StatValue>
 					</StatItem>

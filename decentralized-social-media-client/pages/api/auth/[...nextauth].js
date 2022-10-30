@@ -48,6 +48,10 @@ export default NextAuth({
 				user = await User({ address, profileId });
 				user = await user.save();
 			}
+			user = await User.findById(user._id, { updatedAt: 0, __v: 0, profileId: 0 })
+				.populate('followers', [ 'username', 'address' ])
+				.populate('following', [ 'username', 'address' ])
+				.exec();
 			session.user = { ...user._doc, signature: token.user.signature };
 			return session;
 		},

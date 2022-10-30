@@ -1,20 +1,24 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {AuthorContainer, AvatarEl} from './styled/Follow.styled';
+import { Blockie } from '@web3uikit/web3';
+import { AuthorContainer, AvatarEl } from './styled/Follow.styled';
+import {useRouter} from 'next/router';
 
-const Follow = ({src, username}) => {
+const Follow = ({ user }) => {
+	const router = useRouter();
+
 	return (
-		<Link key={1} href={{ pathname: '/profile', query: { id: 1 } }} passHref>
+		<div onClick={() => router.reload(`/profile?id=${user._id}`)}>
 			<AuthorContainer>
 				<AvatarEl>
-					<Image src={src} width="50" height="50" />
+					<Blockie seed={user.address} size={10} />
 				</AvatarEl>
 				<span>
-					{username}
+					{user.username}
 				</span>
 			</AuthorContainer>
-		</Link>
+		</div>
 	);
-}
+};
 
 export default Follow;

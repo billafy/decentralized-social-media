@@ -3,6 +3,7 @@ import styles from '../../styles/Comment.module.css';
 import { Blockie } from '@web3uikit/web3';
 import { classLister } from '../../utils';
 import Moment from 'react-moment';
+import Link from 'next/link';
 
 const classes = classLister(styles);
 
@@ -18,7 +19,11 @@ export default function Comment({comment}) {
 						{comment.createdAt}
 					</Moment>
 				</a>
-				<div className={classes('username')}>{comment.user.username}</div>
+				<div className={classes('username')}>
+					<Link href={{ pathname: '/post', query: { id: comment.user._id.toString() } }} passHref>
+						{comment.user.username}
+					</Link>
+				</div>
 				<p>{comment.text}</p>
 			</div>
 		</div>
