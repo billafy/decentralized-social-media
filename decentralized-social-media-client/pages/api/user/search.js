@@ -1,32 +1,15 @@
-import User from "../../../models/User";
-import mongoose from "mongoose";
-import { getSession } from "next-auth/react";
+import User from '../../../models/User';
+import mongoose from 'mongoose';
 
-const follow = async (req, res) => {
-  const session = await getSession({ req });
-  const { subString } = req.body;
-  if (!session) return res.status(401).json({ success: false });
-  await mongoose.connect(process.env.MONGO_URI);
-  let user = await User.findById(session.user._id);
-  User.find(
-    { authors: { $regex: subString, $options: "i" } },
-    function (err, user) {
-      if (user) {
-        return res.status(200).json({ success: true, user });
-      } else if (err) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: "User with id `{$user}` not found.",
-          });
-      } else {
-        return res
-          .status(500)
-          .json({ success: false, message: "Something went wrong" });
-      }
-    }
-  );
+const handler = async (req, res) => {
+	if (req.method !== 'GET') return res.status(405).json({ success: false, message: 'Method Not Allowed' });
+
+	const { query } = req.query;
+
+	await mongoose.connect(process.env.MONGO_URI);
+
+	const users = await User.find({ username: { $regex: query, $options: 'i' } }, ['username', 'address']);
+	res.json({ success: true, message: `Found ${users.length} user(s)`, users });
 };
 
-export default follow;
+export default handler;

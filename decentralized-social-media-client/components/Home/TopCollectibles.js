@@ -11,7 +11,7 @@ const TopCollectibles = () => {
 			<Grid>
 				{NFTs.map(nft => {
 					return (
-						<Link key={nft.Id} href={{ pathname: '/asset', query: { id: nft.Id } }} passHref>
+						<Link key={nft.Id} href={{ pathname: '/nft', query: { id: nft.Id } }} passHref>
 							<a>
 								<NFTCard item={nft} />
 							</a>

@@ -1,10 +1,10 @@
 import React from 'react';
-import Asset from '../components/Asset';
+import NFT from '../components/NFT';
 import { Users } from '../constants/info';
 import { NFTs } from '../constants/info';
 import { useRouter } from 'next/router';
 
-export default function AssetPage() {
+export default function NFTPage() {
 	const router = useRouter();
 	const id = router.query.id - 1;
 	const title = NFTs[id].Title;
@@ -17,7 +17,7 @@ export default function AssetPage() {
 	const desc = NFTs[id].Description;
 
 	return (
-		<Asset
+		<NFT
 			title={title}
 			imgurl={imgurl}
 			creator={creator}

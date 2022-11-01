@@ -13,3 +13,7 @@ export const classLister = styleObject => (...classList) => classList.reduce(
 	},
 	''
 );
+
+export const serialize = (object) => {
+	return JSON.parse(JSON.stringify(object));
+};

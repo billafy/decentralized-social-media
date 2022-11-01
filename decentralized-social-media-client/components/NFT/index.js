@@ -12,7 +12,7 @@ import EditionSelector from './EditionSelector';
 import OwnershipItem from './OwnershipItem';
 import BidSticker from './BidSticker';
 
-const AssetEl = styled.article`
+const NFTEl = styled.article`
   background-color: ${Colors.Primary};
   color: ${Colors.Black};
   padding: 1rem;
@@ -150,9 +150,9 @@ const AllTabs = [
 	{ Id: 4, Title: 'Offers', Content: <Tab /> },
 ];
 
-export default function Asset(props) {
+export default function NFT(props) {
 	return (
-		<AssetEl>
+		<NFTEl>
 			<Head>NFT ITEM</Head>
 			<SectionContainer>
 				<LeftSection>
@@ -211,6 +211,6 @@ export default function Asset(props) {
 				</RightSection>
 			</SectionContainer>
 			<BidSticker title={props.title} src={props.imgurl} edition={props.edition} />
-		</AssetEl>
+		</NFTEl>
 	);
 }
