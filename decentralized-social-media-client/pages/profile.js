@@ -21,6 +21,7 @@ export async function getServerSideProps({ query }) {
 		const posts = await PostSchema
 			.find({ user: user._id }, { updatedAt: 0, __v: 0, comments: 0, likes: 0, description: 0 })
 			.populate('user', { createdAt: 0, updatedAt: 0, __v: 0, profileId: 0 })
+			.sort([['createdAt', -1]])
 			.exec();
 		return {
 			props: { user: JSON.parse(JSON.stringify(user)), posts: JSON.parse(JSON.stringify(posts)) },

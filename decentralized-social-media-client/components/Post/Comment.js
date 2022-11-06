@@ -4,28 +4,29 @@ import { Blockie } from '@web3uikit/web3';
 import { classLister } from '../../utils';
 import Moment from 'react-moment';
 import Link from 'next/link';
+import {CommentItem, ProfileImage, UserComment, Time, Username} from './styled/Comment.styled';
 
 const classes = classLister(styles);
 
 export default function Comment({comment}) {
 	return (
-		<div className={classes('comment')}>
-			<div className={classes('profıle-ımage')}>
-				<Blockie  seed={comment.user.address} size={12.5} />
-			</div>
-			<div className={classes('user-comment')}>
-				<a className={classes('time')}>
-					<Moment fromNow>
-						{comment.createdAt}
-					</Moment>
-				</a>
-				<div className={classes('username')}>
-					<Link href={{ pathname: '/post', query: { id: comment.user._id.toString() } }} passHref>
+		<CommentItem>
+			<ProfileImage>
+				<Blockie seed={comment.user.address} size={12.5} />
+			</ProfileImage>
+			<UserComment>
+				<Username>
+					<Link href={{ pathname: '/post', query: { id: comment.user._id } }} passHref>
 						{comment.user.username}
 					</Link>
-				</div>
+				</Username>
 				<p>{comment.text}</p>
-			</div>
-		</div>
+			</UserComment>
+			<Time>
+				<Moment fromNow>
+					{comment.createdAt}
+				</Moment>
+			</Time>
+		</CommentItem>
 	);
 }

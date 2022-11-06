@@ -72,6 +72,7 @@ const CreatePost = ({ onCancel = () => {} }) => {
 				mediaUrl: fileUrl,
 				description: description,
 			}, {withCredentials: true});
+			router.replace(`/post?id=${response.data.post._id.toString()}`)
 		} catch (err) {
 			console.log(err);
 		}
@@ -83,19 +84,15 @@ const CreatePost = ({ onCancel = () => {} }) => {
 				<Title>Create Post</Title>
 				<img src={createObjectURL} />
 				<CapContainer>
-					<TextArea
-						label="Caption"
-						name="Test TextArea Default"
-						onBlur={function noRefCheck() {}}
+					<textarea
 						value={description}
 						onChange={({ target: { value } }) => setDescription(value)}
-						placeholder="Type here field"
-						width="1000px"
+						placeholder='Description'
 					/>
 				</CapContainer>
 				<Container>
-					<Typography onCopy={function noRefCheck() {}} variant="H1">
-						Upload Post Image/Video
+					<Typography onCopy={function noRefCheck() {}} variant="H3" style={{color: 'black'}}>
+						Upload Image/Video
 					</Typography>
 					<DContainer>
 						<div {...getRootProps({ className: 'dropzone' })}>

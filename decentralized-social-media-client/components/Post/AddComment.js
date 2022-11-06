@@ -1,20 +1,16 @@
 import { Button, TextArea } from '@web3uikit/core';
 import React from 'react';
-import styles from '../../styles/Addcomment.module.scss';
-import {classLister} from '../../utils';
+import {CommentBox, Footer} from './styled/AddComment.styled';
 
-const classes = classLister(styles);
-
-export default function Addcomment() {
+const AddComment = () => {
 	return (
-		<div className={classes('writing')}>
-			<TextArea width="370px" />
-
-			<div className={classes('footer')}>
-				<div className={classes('group-btn')}>
-					<Button text="Comment" />
-				</div>
-			</div>
-		</div>
+		<CommentBox>
+			<textarea/>
+			<Footer>
+				<Button text='Comment'/>
+			</Footer>
+		</CommentBox>
 	);
 }
+
+export default AddComment;

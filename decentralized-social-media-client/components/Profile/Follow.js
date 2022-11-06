@@ -7,8 +7,14 @@ import {useRouter} from 'next/router';
 const Follow = ({ user }) => {
 	const router = useRouter();
 
+	const redirectUser = async () => {
+		console.log(user);
+		await router.replace(`/profile?id=${user._id.toString()}`);
+		router.reload();
+	};
+
 	return (
-		<div onClick={() => router.reload(`/profile?id=${user._id}`)}>
+		<div onClick={redirectUser}>
 			<AuthorContainer>
 				<AvatarEl>
 					<Blockie seed={user.address} size={10} />

@@ -2,106 +2,116 @@ import styled from 'styled-components';
 import { Colors, Devices } from '../../Theme';
 
 export const PostEl = styled.article`
-  background-color: ${Colors.Primary};
-  color: ${Colors.Black};
-  padding: 1rem;
-  display: flex;
-
-  @media ${Devices.Laptop} {
-    padding: 1rem 15%;
-  }
+    background-color: ${Colors.Primary};
+    color: ${Colors.Black};
+    padding: 1rem;
+    display: flex;
+    @media ${Devices.Laptop} {
+        padding: 1rem 15%;
+    }
 `;
+
 export const SectionContainer = styled.div`
-  display: flex;
-  margin-top: 40px;
-  gap: 2rem;
-  @media ${Devices.Laptop} {
-    flex-direction: row;
-  }
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: min(1200px, 90%);
+    margin-top: 40px;
+    margin: 40px auto 0px auto;
+    gap: 1rem;
+    @media (max-width: 868px) {
+        margin: auto;
+        grid-template-columns: 1fr;
+    }
 `;
 
 export const LeftSection = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 1rem;
+    border: 1px solid ${Colors.Border};
+    padding: 1rem;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 5px;
 `;
+
 export const ImageEl = styled.div`
+    border-radius: 5px;
     overflow: hidden;
 `;
 
 export const RightSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  flex: 1;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.85rem;
+    border: 1px solid ${Colors.Border};
+    padding: 1rem;
 `;
 
 export const AuthorContainer = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 30px;
-  margin-left: 6.875rem;
-  span {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
+    gap: 1rem;
+    align-items: center;
+    span {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
 `;
+
 export const AvatarEl = styled.div`
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
 `;
+
 export const TimeLabel = styled.label`
-  color: ${Colors.Gray};
-  font-size: 0.9rem;
+    color: ${Colors.Gray};
+    font-size: 0.75rem;
 `;
-export const UsernameEl = styled.h3``;
+
+export const UsernameEl = styled.h3`
+    color: black;
+`;
 
 export const Title = styled.p`
-  font-size: 1rem;
-  display: inline-block;
-  margin-right: 1rem;
-  margin-left: 120px;
-  max-width:400px;
+    font-size: 1rem;
+    padding: 0.5rem 0.25rem;
 `;
 
 export const Likes = styled.span`
-margin-left: 6.875rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0px 0.25rem;
 `;
 
-export const LikesEl = styled.span`padding:10px;`;
+export const LikesEl = styled.span`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+`;
 
 export const Des = styled.div`
-  white-space: pre-wrap;
+    display: flex;
+    white-space: pre-wrap;
+    flex-direction: column;
+    gap: 0.75rem;
 `;
 
-export const Interact = styled.div`font-size: 2.4rem;
-cursor: pointer;
-color: #a89ec9;`;
+export const Interact = styled.div`
+    font-size: 2.25rem;
+    color: #a89ec9;
+`;
 
-export const Share = styled.div`display: flex;
-align-items: center;
-gap:1.5rem;
-  width:100%;
-  padding:0 0 .5rem 0;
-
-  color: #a89ec9;`;
+export const Share = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #a89ec9;
+`;
 
 export const ShareLeft = styled.span`justify-content: start;
-font-size: 2.4rem;
-  cursor: pointer;
-  color: #a89ec9;
-  i:hover{
-    color: #ee83e5;
-  }`;
-
-export const ShareRight = styled.span`flex-grow:1;
-text-align: right;
-font-size: 2.4rem;
-  cursor: pointer;
-  color: #a89ec9;
-  i:hover{
-    color: #ee83e5;
-  }`;
+    cursor: pointer;
+    font-size: 2.25rem;
+ `;
