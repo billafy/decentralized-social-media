@@ -29,7 +29,8 @@ import {
     Des,
     Interact,
     Share,
-    ShareLeft
+    ShareLeft,
+    CommentList,
 } from './styled/index.styled';
 
 export default function Post({ post }) {
@@ -57,10 +58,10 @@ export default function Post({ post }) {
 						<Share>
 							<ShareLeft>
 								{currentPost.likes.includes(userProfile._id)
-									? <i onClick={likeToggle}><AiFillHeart color="#DC143C" /></i>
-									: <i onClick={likeToggle}><AiOutlineHeart color="#DC143C" /></i>}
+									? <AiFillHeart color="#DC143C" onClick={likeToggle}/>
+									: <AiOutlineHeart color="#DC143C" onClick={likeToggle}/>}
 							</ShareLeft>
-							<ShareLeft><i><GoComment color="#000000" /></i></ShareLeft>
+							<ShareLeft><GoComment color="#000000"/></ShareLeft>
 						</Share>
 					</Interact>
 				</LeftSection>
@@ -95,7 +96,7 @@ export default function Post({ post }) {
                         </LikesEl>
 					</Likes>
 					<Des>
-                        <AddComment />
+                        <AddComment post={currentPost} setPost={currentPost}/>
 						{currentPost.comments.map(comment => {
 							return <Comment comment={comment} />;
 						})}

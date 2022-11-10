@@ -68,3 +68,13 @@ button {
 .rWEug {
   border-radius: 5px !important;
 }
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: white;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+  background: rgb(63,19,82);
+}

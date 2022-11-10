@@ -46,6 +46,8 @@ export const RightSection = styled.div`
     gap: 0.85rem;
     border: 1px solid ${Colors.Border};
     padding: 1rem;
+    max-height: 550px;
+    overflow-y: auto;
 `;
 
 export const AuthorContainer = styled.div`
@@ -102,6 +104,8 @@ export const Des = styled.div`
 export const Interact = styled.div`
     font-size: 2.25rem;
     color: #a89ec9;
+    align-items: center;
+    display: flex;
 `;
 
 export const Share = styled.div`
@@ -114,4 +118,6 @@ export const Share = styled.div`
 export const ShareLeft = styled.span`justify-content: start;
     cursor: pointer;
     font-size: 2.25rem;
+    align-items: center;
+    display: flex;
  `;
