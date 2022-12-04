@@ -32,6 +32,10 @@ contract PostNft is ERC721URIStorage {
 		_burn(tokenId);
 	}
 
+	function transferNft(address from, address to, uint256 tokenId) internal {
+		_safeTransfer(from, to, tokenId, "");
+	}
+
 	/* view functions */
 
 	function getTokenCounter() public view returns (uint256) {

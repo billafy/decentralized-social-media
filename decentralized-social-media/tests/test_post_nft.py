@@ -1,19 +1,16 @@
-# write tests for PostNft contract here
-
-"""
-use the SocialMedia contract to call PostNft functions
-just check if the constructor has initialized counter value correctly
-as that is the only public function
-"""
-import os
 import pytest
-from brownie import Wei, accounts, SocialMedia
+from brownie import accounts, PostNft
 
+''' utils '''
 
 @pytest.fixture
-def social_media():
-    return SocialMedia.deploy(0.001, {"from": accounts[0]})
+def post_nft():
+    return PostNft.deploy({"from": accounts[0]})
 
+''' tests '''
 
-def test_Mint_NFT(social_media):
-    pass
+# constructor()
+
+def test_get_token_counter(post_nft):
+    token_counter = post_nft.getTokenCounter()
+    assert token_counter == 1

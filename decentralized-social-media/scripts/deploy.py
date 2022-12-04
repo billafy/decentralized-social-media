@@ -4,7 +4,7 @@ This script will deploy all our contracts
 
 # things to do -
 """
-1. deploy SocialMedia contract by passing the mint fee to it
+1. deploy Marketplace contract by passing the mint fee to it
 
 Note: make sure you verify the contracts on etherscan while deploying
 verifying makes our contracts easily traceable on etherscan
@@ -12,7 +12,7 @@ verifying makes our contracts easily traceable on etherscan
 import os
 import json
 from dotenv import load_dotenv
-from brownie import Wei, accounts, SocialMedia, chain
+from brownie import Wei, accounts, Marketplace, chain
 import shutil
 
 load_dotenv()
@@ -27,7 +27,7 @@ def clear_development_deployments():
                 shutil.rmtree(f"{deployments_path}/{file}")
 
 
-def store_add_abi(social_media):
+def store_add_abi(marketplace):
     addresses = json.loads(
         open(
             "../decentralized-social-media-client/constants/addresses.json", "r"
@@ -35,9 +35,9 @@ def store_add_abi(social_media):
     )
     if not addresses:
         addresses = {}
-    addresses[str(chain.id)] = social_media.address
+    addresses[str(chain.id)] = marketplace.address
     with open("../decentralized-social-media-client/constants/abi.json", "w") as abi:
-        json.dump(social_media.abi, abi, indent=3)
+        json.dump(marketplace.abi, abi, indent=3)
     with open(
         "../decentralized-social-media-client/constants/addresses.json", "w"
     ) as add:
@@ -46,6 +46,6 @@ def store_add_abi(social_media):
 
 def main():
     clear_development_deployments()
-    SocialMedia.deploy((0.001), {"from": accounts[0]})
-    social_media = SocialMedia[-1]
-    store_add_abi(social_media)
+    Marketplace.deploy((0.001), {"from": accounts[0]})
+    marketplace = Marketplace[-1]
+    store_add_abi(marketplace)
