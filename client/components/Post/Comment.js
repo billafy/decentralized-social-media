@@ -16,7 +16,7 @@ export default function Comment({comment}) {
 			</ProfileImage>
 			<UserComment>
 				<Username>
-					<Link href={{ pathname: '/post', query: { id: comment.user._id } }} passHref>
+					<Link href={{ pathname: '/profile', query: { id: comment.user._id } }} passHref>
 						{comment.user.username}
 					</Link>
 				</Username>

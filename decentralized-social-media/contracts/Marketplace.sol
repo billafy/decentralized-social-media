@@ -31,6 +31,7 @@ contract Marketplace is PostNft {
 	mapping(uint256 => mapping(address => Bid)) private s_bids;
 	mapping(address => uint256) s_balances;
 	mapping(uint256 => address[]) private s_bidders;
+	mapping(uint256 => address) private s_creators;
 
 	/* events */
 
@@ -72,6 +73,7 @@ contract Marketplace is PostNft {
 		if(msg.value != i_mintFee) 
 			revert Marketplace__InsufficientFee();
 		uint256 tokenId = mintNft(msg.sender, postURI);
+		s_creators[tokenId] = msg.sender;
 		emit PostMinted(tokenId, msg.sender);
 	}
 
@@ -105,7 +107,12 @@ contract Marketplace is PostNft {
 		s_bidders[tokenId] = new address[](0);
 		address from = ownerOf(tokenId);
 		transferNft(from, msg.sender, tokenId);
-		s_balances[from] += bid.amount;
+		if(s_creators[tokenId] == from) 
+			s_balances[from] += bid.amount;
+		else {
+			s_balances[s_creators[tokenId]] += bid.amount * 50000000 / 1000000000;
+			s_balances[from] += bid.amount * 950000000 / 1000000000;
+		}
 		emit NftTransferred(tokenId, from, msg.sender, bid.amount);
 	}
 
@@ -132,6 +139,10 @@ contract Marketplace is PostNft {
 
 	function getMintFee() public view returns (uint256) {
 		return i_mintFee;
+	}
+
+	function getCreator(uint256 tokenId) public view returns(address) {
+		return s_creators[tokenId];
 	}
 
 	function getBidAmount(uint256 tokenId, address bidder) public view returns (uint256) {

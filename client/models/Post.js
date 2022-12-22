@@ -7,6 +7,7 @@ const postSchema = new Schema({
 		type: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
 		default: [],
 	},
+	isMinted: {type: Boolean, default: false},
 	comments: { type: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ], default: [] },
 	user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 }, {timestamps: true});

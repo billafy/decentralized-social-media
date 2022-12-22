@@ -1,10 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
-import { TextArea } from '@web3uikit/core';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
 import { Typography } from '@web3uikit/core';
@@ -14,7 +12,6 @@ import Moralis from 'moralis';
 import {
 	thumbsContainer,
 	thumbnail,
-	thumbnailInner,
 	img,
 	DContainer,
 	Title,
@@ -25,8 +22,7 @@ import {
 
 const CreatePost = ({ onCancel = () => {} }) => {
 	const router = useRouter();
-	const dispatch = useDispatch();
-	const { isLoggedIn, userProfile } = useSelector(state => state.auth);
+	const { isLoggedIn } = useSelector(state => state.auth);
 	const [ createObjectURL, setCreateObjectURL ] = useState(null);
 	const [ description, setDescription ] = useState('');
 	const [ file, setFile ] = useState(null);

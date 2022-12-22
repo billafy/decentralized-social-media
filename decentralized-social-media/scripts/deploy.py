@@ -7,12 +7,12 @@ This script will deploy all our contracts
 1. deploy Marketplace contract by passing the mint fee to it
 
 Note: make sure you verify the contracts on etherscan while deploying
-verifying makes our contracts easily traceable on etherscan
+verifying makes our contracts easily trackable on etherscan
 """
 import os
 import json
 from dotenv import load_dotenv
-from brownie import Wei, accounts, Marketplace, chain
+from brownie import accounts, Marketplace, chain, config
 import shutil
 
 load_dotenv()
@@ -46,6 +46,10 @@ def store_add_abi(marketplace):
 
 def main():
     clear_development_deployments()
-    Marketplace.deploy((0.001), {"from": accounts[0]})
+    if chain.id in [1337, '1337', 8545, '8545']: 
+        Marketplace.deploy((0.0001), {"from": accounts[0]})
+    else: 
+        account = accounts.add(os.environ.get('PRIVATE_KEY'))
+        Marketplace.deploy((0.0001), {"from": account})
     marketplace = Marketplace[-1]
     store_add_abi(marketplace)

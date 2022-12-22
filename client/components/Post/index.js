@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import Image from 'next/image';
-import { IoIosHeart, IoIosSend, IoIosBookmark, IoIosHappy } from 'react-icons/io';
-import { BsHeart, BsFillEyeFill, BsThreeDots } from 'react-icons/bs';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { GoComment } from 'react-icons/go';
 import Comment from './Comment';
 import Head from 'next/head';
-import { PostData } from '../../constants/info';
 import AddComment from './AddComment';
 import { Blockie } from '@web3uikit/web3';
+import { Button } from '@web3uikit/core';
+import { useWeb3Contract } from 'react-moralis';
 import Moment from 'react-moment';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import marketplaceAbi from '../../constants/abi.json';
+import addresses from '../../constants/addresses.json';
+import Moralis from 'moralis';
+import {ethers} from 'ethers';
 import {
     PostEl,
     SectionContainer,
@@ -30,17 +33,46 @@ import {
     Interact,
     Share,
     ShareLeft,
-    CommentList,
 } from './styled/index.styled';
 
 export default function Post({ post }) {
 	const [ currentPost, setCurrentPost ] = useState(post);
-	const { isLoggedIn, userProfile } = useSelector(state => state.auth);
+	const { userProfile } = useSelector(state => state.auth);
+	const [postURI, setPostURI] = useState('');
+	const { runContractFunction: mintPost } = useWeb3Contract({
+		abi: marketplaceAbi,
+		contractAddress: addresses[process.env.NEXT_PUBLIC_CHAIN_ID],
+		functionName: 'mintPost',
+		msgValue: ethers.utils.parseEther('0.0001'),
+		params: {postURI: postURI},
+	});
 
 	const likeToggle = async () => {
 		try {
 			const response = await axios.put(`/api/post/${post._id.toString()}/likeToggle`);
 			setCurrentPost(response.data.post);
+		} catch (err) {
+			console.log(err);
+		}                                                
+	};
+
+	const mintNft = async () => {
+		await Moralis.start({ apiKey: 'BTVSYEbVjhpDyl5kVeF77g69T1oCNcAiiexJ81ceRh9dJyvNtg3o9mRSgdkmxE4j' });
+		try {
+			// const ipfsResponse = await Moralis.EvmApi.ipfs.uploadFolder({
+			// 	abi: [{path: `${currentPost._id}.json`, content: {
+			// 		name: 'Test NFT',
+			// 		description: currentPost.description,
+			// 		image: currentPost.mediaUrl,
+			// 	}}]
+			// });
+			// console.log(ipfsResponse.data[0].path);
+			// setPostURI(ipfsResponse.data[0].path);
+			const provider = new ethers.providers.Web3Provider(window.ethereum)
+			await provider.send("eth_requestAccounts", []);
+			const signer = provider.getSigner()
+			const marketplace = new ethers.Contract(addresses[process.env.NEXT_PUBLIC_CHAIN_ID], marketplaceAbi, signer);
+			await marketplace.mintPost('https://ipfs.moralis.io:2053/ipfs/QmdY9FoAxA4S2VxBJHL3rCfC2HNE9SEHAe74CXHuQBg875/6366a723d6a972eae3502e04.json');
 		} catch (err) {
 			console.log(err);
 		}
@@ -64,6 +96,9 @@ export default function Post({ post }) {
 							<ShareLeft><GoComment color="#000000"/></ShareLeft>
 						</Share>
 					</Interact>
+					{currentPost.user._id === userProfile._id && !currentPost.isMinted && 
+						<Button text='Mint NFT' onClick={mintNft}/>
+					}
 				</LeftSection>
 				<RightSection>
 					<AuthorContainer>

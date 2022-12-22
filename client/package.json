@@ -39,7 +39,8 @@
     "sass": "^1.54.9",
     "styled-components": "^5.3.3",
     "unique-names-generator": "^4.7.1",
-    "wagmi": "^0.6.8"
+    "wagmi": "^0.6.8",
+    "web3": "^1.8.1"
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^2.0.2",
