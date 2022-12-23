@@ -1,31 +1,48 @@
-import React from 'react';
-import NFT from '../components/NFT';
-import { Users } from '../constants/info';
-import { NFTs } from '../constants/info';
-import { useRouter } from 'next/router';
+import React from "react";
+import NFT from "../components/NFT";
+import axios from "axios";
+import addresses from "../constants/addresses.json";
 
-export default function NFTPage() {
-	const router = useRouter();
-	const id = router.query.id - 1;
-	const title = NFTs[id].Title;
-	const imgurl = NFTs[id].ImageUrl;
-	const creator = NFTs[id].Author;
-	const likes = NFTs[id].likes;
-	const views = NFTs[id].views;
-	const avi = NFTs[id].Avatar;
-	const editions = NFTs[id].Edition;
-	const desc = NFTs[id].Description;
+const NFTPage = ({ nft }) => {
+    return <NFT nft={nft} />;
+};
 
-	return (
-		<NFT
-			title={title}
-			imgurl={imgurl}
-			creator={creator}
-			likes={likes}
-			views={views}
-			cimg={avi}
-			desc={desc}
-			edition={editions}
-		/>
-	);
+export async function getServerSideProps({ query }) {
+    try {
+        const response = await axios.get(
+            `https://deep-index.moralis.io/api/v2/nft/${
+                addresses[process.env.NEXT_PUBLIC_CHAIN_ID]
+            }/${query.tokenId}`,
+            {
+                params: {
+                    chain: "goerli",
+                    format: "decimal",
+                    normalizeMetadata: "false",
+                },
+                headers: {
+                    accept: "application/json",
+                    "X-API-Key": process.env.NEXT_PUBLIC_MORALIS_API_KEY,
+                },
+            }
+        );
+
+        return {
+            props: {
+                nftOwner: JSON.parse(JSON.stringify({})),
+                nft: JSON.parse(
+                    JSON.stringify({
+                        ...response.data,
+                        metadata: JSON.parse(response.data.metadata),
+                    })
+                ),
+            },
+        };
+    } catch (err) {
+        console.log(err);
+        return {
+            notFound: true,
+        };
+    }
 }
+
+export default NFTPage;
