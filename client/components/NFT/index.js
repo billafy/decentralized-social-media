@@ -1,7 +1,6 @@
-import Image from "next/image";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoMdShareAlt } from "react-icons/io";
-import { BsHeart, BsThreeDots } from "react-icons/bs";
+import { BsThreeDots } from "react-icons/bs";
 import { Blockie } from "@web3uikit/web3";
 import Tab from "../styled/Tab.styled";
 import Tabs from "../styled/Tabs.styled";
@@ -11,6 +10,7 @@ import OwnershipItem from "./OwnershipItem";
 import BidSticker from "./BidSticker";
 import addresses from "../../constants/addresses.json";
 import { useSelector } from "react-redux";
+import {Link} from 'react-router-dom';
 import {
     NFTEl,
     SectionContainer,
@@ -40,12 +40,10 @@ const AllTabs = [
     { Id: 4, Title: "Offers", Content: <Tab /> },
 ];
 
-export default function NFT({ nft }) {
+export default function NFT({ nftOwner, nft, postId }) {
     const {
         auth: { userProfile },
     } = useSelector((state) => state);
-
-    console.log(nft.owner_of, userProfile.address);
 
     return (
         <NFTEl>
@@ -53,12 +51,7 @@ export default function NFT({ nft }) {
             <SectionContainer>
                 <LeftSection>
                     <ImageEl>
-                        <Image
-                            src={nft.metadata.image}
-                            layout="responsive"
-                            width="1000px"
-                            height="1000px"
-                        />
+                        <img src={nft.metadata.image} alt='NFT'/>
                     </ImageEl>
                 </LeftSection>
                 <RightSection>
@@ -68,7 +61,7 @@ export default function NFT({ nft }) {
                         </AvatarEl>
                         <span>
                             <CreatorLabel>Creator</CreatorLabel>
-                            <UsernameEl>LamiFY</UsernameEl>
+                            <UsernameEl>{nftOwner.username}</UsernameEl>
                         </span>
                         <MoreBtn>
                             <BsThreeDots />
@@ -80,12 +73,13 @@ export default function NFT({ nft }) {
                     </span>
                     <Des>{nft.metadata.description}</Des>
                     <TagContainer>
-                        <Tag>Crypto</Tag>
+                        {nft.metadata.attributes?.map((tag, i) => {
+                            return (
+                                <Tag key={i}>{tag.value}</Tag>
+                            );
+                        })}
                     </TagContainer>
                     <TopBtns>
-                        <LikesBtn>
-                            <BsHeart />0
-                        </LikesBtn>
                         <ShareBtn>
                             <IoMdShareAlt />
                             Share
@@ -118,7 +112,7 @@ export default function NFT({ nft }) {
                     <Tabs mt="1rem" data={AllTabs} />
                 </RightSection>
             </SectionContainer>
-            {nft.owner_of.toLowerCase() !== userProfile.address.toLowerCase() && (
+            {nft.owner_of.toLowerCase() !== userProfile.address?.toLowerCase() && (
                 <BidSticker
                     title={nft.metadata.name}
                     src={nft.metadata.image}

@@ -15,7 +15,7 @@ const handler = async (req, res) => {
 	try {
 		await mongoose.connect(process.env.MONGO_URI);
 
-		let post = await Post({
+		let post = new Post({
 			mediaUrl,
 			description,
 			user: session.user._id,

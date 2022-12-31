@@ -30,7 +30,7 @@ import {
     StatTitle,
 } from "./styled/index.styled";
 
-const Profile = ({ user, posts, nfts }) => {
+const Profile = ({ user, posts, nfts, likes }) => {
     const dispatch = useDispatch();
     const {
         auth: { isLoggedIn, isLoading, userProfile },
@@ -181,7 +181,7 @@ const Profile = ({ user, posts, nfts }) => {
                     }}
                 >
                     {isLoggedIn &&
-                        profile._id.toString() !== userProfile._id.toString() &&
+                        profile._id?.toString() !== userProfile._id?.toString() &&
                         (userProfile.following.includes(profile._id) ? (
                             <Button onClick={unfollow} text="Following" />
                         ) : (
@@ -218,11 +218,11 @@ const Profile = ({ user, posts, nfts }) => {
                 <Stats>
                     <StatItem>
                         <StatTitle>Likes</StatTitle>
-                        <StatValue>0</StatValue>
+                        <StatValue>{likes}</StatValue>
                     </StatItem>
                     <StatItem>
                         <StatTitle>Earnings</StatTitle>
-                        <StatValue>0 ETH</StatValue>
+                        <StatValue>{profile.balance} ETH</StatValue>
                     </StatItem>
                     <StatItem>
                         <StatTitle>
@@ -230,7 +230,7 @@ const Profile = ({ user, posts, nfts }) => {
                                 Followers
                             </a>
                         </StatTitle>
-                        <StatValue>{profile.followers.length}</StatValue>
+                        <StatValue>{profile.followers?.length}</StatValue>
                     </StatItem>
                     <StatItem>
                         <StatTitle>
@@ -238,7 +238,7 @@ const Profile = ({ user, posts, nfts }) => {
                                 Following
                             </a>
                         </StatTitle>
-                        <StatValue>{profile.following.length}</StatValue>
+                        <StatValue>{profile.following?.length}</StatValue>
                     </StatItem>
                 </Stats>
                 <Content>

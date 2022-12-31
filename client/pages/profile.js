@@ -2,8 +2,8 @@ import Profile from "../components/Profile";
 import Moralis from "moralis";
 import addresses from '../constants/addresses.json'
 
-const ProfilePage = ({ user, posts, nfts }) => {
-    return <Profile {...{user, posts, nfts}} />;
+const ProfilePage = ({ user, posts, nfts, likes }) => {
+    return <Profile {...{user, posts, nfts, likes}} />;
 };
 
 export async function getServerSideProps({ query }) {
@@ -26,7 +26,7 @@ export async function getServerSideProps({ query }) {
         if (!user) throw "Not Found";
         const posts = await PostSchema.find(
             { user: user._id },
-            { updatedAt: 0, __v: 0, comments: 0, likes: 0, description: 0 }
+            { updatedAt: 0, __v: 0, comments: 0, description: 0 }
         )
             .populate("user", {
                 createdAt: 0,
@@ -36,6 +36,10 @@ export async function getServerSideProps({ query }) {
             })
             .sort([["createdAt", -1]])
             .exec();
+        
+        let likes = 0;
+        for(let i = 0; i < posts.length; ++i) 
+            likes += posts[i].likes.length;
 
         await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
@@ -51,6 +55,7 @@ export async function getServerSideProps({ query }) {
                 user: JSON.parse(JSON.stringify(user)),
                 posts: JSON.parse(JSON.stringify(posts)),
                 nfts: JSON.parse(JSON.stringify(nfts)),
+                likes,
             },
         };
     } catch (err) {

@@ -28,8 +28,12 @@ export const LeftSection = styled.div`
     gap: 1rem;
 `;
 export const ImageEl = styled.div`
-    border-radius: 5px;
     overflow: hidden;
+    width: 100%;
+    img {
+        border-radius: 5px;
+        width: 100%;
+    }
 `;
 export const ChainLink = styled.a`
     border-radius: 5px;
@@ -63,7 +67,12 @@ export const LikesBtn = styled.div`
     gap: 0.4rem;
 `;
 
-export const ShareBtn = styled(LikesBtn)``;
+export const ShareBtn = styled(LikesBtn)`
+    svg {
+        color: ${Colors.Secondary};
+    }
+`;
+
 export const MoreBtn = styled(LikesBtn)`
     margin-left: auto;
 `;
@@ -109,6 +118,7 @@ export const Des = styled.p`
 export const TagContainer = styled.div`
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 `;
 export const Tag = styled.span`
     border: 1px solid ${Colors.Black};

@@ -1,9 +1,12 @@
+import {Fragment} from 'react';
 import styles from '../../styles/Posts.module.css';
 import { classLister } from '../../utils';
 
 const classes = classLister(styles);
 
 const NFTs = ({ nft }) => {
+	if(!nft.metadata) 
+		return <Fragment/>
 	return (
 		<div className={classes('card-wrapper', 'flex-container')}>
 			<div className={classes('card-header', 'grid')}>

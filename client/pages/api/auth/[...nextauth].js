@@ -45,7 +45,7 @@ export default NextAuth({
 			await mongoose.connect(process.env.MONGO_URI);
 			let user = await User.findOne({ profileId });
 			if (!user) {
-				user = await User({ address, profileId });
+				user = new User({ address, profileId });
 				user = await user.save();
 			}
 			user = await User.findById(user._id, { updatedAt: 0, __v: 0, profileId: 0 })

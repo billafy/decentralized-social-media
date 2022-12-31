@@ -30,16 +30,16 @@ def clear_development_deployments():
 def store_add_abi(marketplace):
     addresses = json.loads(
         open(
-            "../decentralized-social-media-client/constants/addresses.json", "r"
+            "../client/constants/addresses.json", "r"
         ).read()
     )
     if not addresses:
         addresses = {}
     addresses[str(chain.id)] = marketplace.address
-    with open("../decentralized-social-media-client/constants/abi.json", "w") as abi:
+    with open("../client/constants/abi.json", "w") as abi:
         json.dump(marketplace.abi, abi, indent=3)
     with open(
-        "../decentralized-social-media-client/constants/addresses.json", "w"
+        "../client/constants/addresses.json", "w"
     ) as add:
         json.dump(addresses, add, indent=3)
 

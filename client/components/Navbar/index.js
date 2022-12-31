@@ -14,6 +14,9 @@ import { Button } from '@web3uikit/core';
 import { HeaderEl, Center, LogoText, Logo, Nav, SearchIcon, MenuIcon } from './styled/index.styled';
 import Link from 'next/link';
 import { Colors } from '../Theme';
+import addresses from "../../constants/addresses.json";
+import marketplaceAbi from "../../constants/abi.json";
+import {ethers} from 'ethers';
 
 const Navbar = ({ mobileMenu }) => {
 	const { auth: { userProfile, isLoggedIn } } = useSelector(state => state);
@@ -37,6 +40,7 @@ const Navbar = ({ mobileMenu }) => {
 			const message = data.message;
 			const signature = await signMessageAsync({ message });
 			await signIn('credentials', { message, signature, redirect: false });
+
 			handleUserProfile();
 		} catch (err) {
 			console.log(err);
@@ -53,12 +57,21 @@ const Navbar = ({ mobileMenu }) => {
 	const handleUserProfile = async () => {
 		const session = await getSession();
 		if (session) {
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner();
+            const marketplace = new ethers.Contract(
+                addresses[process.env.NEXT_PUBLIC_CHAIN_ID],
+                marketplaceAbi,
+                signer
+            );
+            const balance = await marketplace.getBalance();
 			dispatch({
 				type: 'SIGN_IN',
 				payload: {
 					userProfile: {
 						...session.user,
-						balance: '0',
+						balance: balance.toString(),
 					},
 				},
 			});
