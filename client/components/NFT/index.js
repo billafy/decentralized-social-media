@@ -1,16 +1,18 @@
+import {useState} from 'react';
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoMdShareAlt } from "react-icons/io";
 import { BsThreeDots } from "react-icons/bs";
 import { Blockie } from "@web3uikit/web3";
-import Tab from "../styled/Tab.styled";
-import Tabs from "../styled/Tabs.styled";
 import Head from "next/head";
 import EditionSelector from "./EditionSelector";
-import OwnershipItem from "./OwnershipItem";
 import BidSticker from "./BidSticker";
 import addresses from "../../constants/addresses.json";
 import { useSelector } from "react-redux";
-import {Link} from 'react-router-dom';
+import Link from 'next/link';
+import { Button } from "@web3uikit/core";
+import {ethers} from 'ethers';
+import Moralis from "moralis";
+import marketplaceAbi from "../../constants/abi.json";
 import {
     NFTEl,
     SectionContainer,
@@ -19,7 +21,6 @@ import {
     ChainLink,
     RightSection,
     TopBtns,
-    LikesBtn,
     ShareBtn,
     MoreBtn,
     AuthorContainer,
@@ -31,19 +32,39 @@ import {
     Des,
     TagContainer,
     Tag,
+    BidList,
 } from "./styled/index.styled";
 
-const AllTabs = [
-    { Id: 1, Title: "Ownership", Content: <OwnershipItem /> },
-    { Id: 2, Title: "History", Content: <Tab /> },
-    { Id: 3, Title: "Bids", Content: <Tab /> },
-    { Id: 4, Title: "Offers", Content: <Tab /> },
-];
-
 export default function NFT({ nftOwner, nft, postId }) {
+    const [currentNft, setCurrentNft] = useState(nft);
     const {
         auth: { userProfile },
     } = useSelector((state) => state);
+
+    const acceptBid = async (bidder) => {
+        await Moralis.start({
+            apiKey: process.env.NEXT_PUBLIC_MORALIS_API_KEY,
+        });
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner();
+            const marketplace = new ethers.Contract(
+                addresses[process.env.NEXT_PUBLIC_CHAIN_ID],
+                marketplaceAbi,
+                signer
+            );
+            await marketplace.acceptBid(currentNft.token_id, bidder);
+            const bids = currentNft.bids.map(bid => {
+                if(bid.bidder.toLowerCase() === bidder.toLowerCase()) 
+                    return {...bid, status: 'Accepted'};
+                return bid;
+            })
+            setCurrentNft({...currentNft, bids})
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     return (
         <NFTEl>
@@ -51,29 +72,40 @@ export default function NFT({ nftOwner, nft, postId }) {
             <SectionContainer>
                 <LeftSection>
                     <ImageEl>
-                        <img src={nft.metadata.image} alt='NFT'/>
+                        <img src={currentNft.metadata.image} alt='NFT'/>
                     </ImageEl>
                 </LeftSection>
                 <RightSection>
                     <AuthorContainer>
                         <AvatarEl>
-                            <Blockie seed={nft.owner_of} size={10} />
+                            <Blockie seed={currentNft.owner_of} size={10} />
                         </AvatarEl>
                         <span>
-                            <CreatorLabel>Creator</CreatorLabel>
-                            <UsernameEl>{nftOwner.username}</UsernameEl>
+                            <CreatorLabel>Owner</CreatorLabel>
+                            <UsernameEl>
+                                <Link
+                                    href={{
+                                        pathname: "/profile",
+                                        query: {
+                                            id: nftOwner._id.toString(),
+                                        },
+                                    }}
+                                >
+                                    {nftOwner.username}
+                                </Link>
+                            </UsernameEl>
                         </span>
                         <MoreBtn>
                             <BsThreeDots />
                         </MoreBtn>
                     </AuthorContainer>
                     <span>
-                        <Title>{nft.metadata.name}</Title>
-                        <MarketPlace>{nft.symbol}</MarketPlace>
+                        <Title>{currentNft.metadata.name}</Title>
+                        <MarketPlace>{currentNft.symbol}</MarketPlace>
                     </span>
-                    <Des>{nft.metadata.description}</Des>
+                    <Des>{currentNft.metadata.description}</Des>
                     <TagContainer>
-                        {nft.metadata.attributes?.map((tag, i) => {
+                        {currentNft.metadata.attributes?.map((tag, i) => {
                             return (
                                 <Tag key={i}>{tag.value}</Tag>
                             );
@@ -86,13 +118,13 @@ export default function NFT({ nftOwner, nft, postId }) {
                         </ShareBtn>
                     </TopBtns>
                     <EditionSelector
-                        edition={nft.token_id}
-                        mintDate={nft.last_token_uri_sync}
+                        edition={currentNft.token_id}
+                        mintDate={currentNft.last_token_uri_sync}
                     />
                     <a
                         href={`https://testnets.opensea.io/assets/goerli/${
                             addresses[process.env.NEXT_PUBLIC_CHAIN_ID]
-                        }/${nft.token_id}`}
+                        }/${currentNft.token_id}`}
                         target="_blank"
                     >
                         <ChainLink>
@@ -102,23 +134,34 @@ export default function NFT({ nftOwner, nft, postId }) {
                     <a
                         href={`https://goerli.etherscan.io/token/${
                             addresses[process.env.NEXT_PUBLIC_CHAIN_ID]
-                        }?a=${nft.token_id}#inventory`}
+                        }?a=${currentNft.token_id}#inventory`}
                         target="_blank"
                     >
                         <ChainLink>
                             View on Etherscan <HiOutlineExternalLink />
                         </ChainLink>
                     </a>
-                    <Tabs mt="1rem" data={AllTabs} />
+                    <BidList>
+                        {currentNft.bids.length > 0 && <h3>Bids</h3>}
+                        {currentNft.bids.map(bid => {
+                            return (
+                                <div>
+                                    <Blockie seed={bid.bidder} size={7.5} />
+                                    <p>{bid.user.username}</p>
+                                    <b>{ethers.utils.formatEther(bid.amount)} ETH</b>
+                                    {bid.status === 'Submitted'
+                                        ?
+                                        <Button text='Accept' onClick={() => acceptBid(bid.bidder)}/>
+                                        :
+                                        <Button text='Accepted' disabled={true}/>
+                                    }
+                                </div>
+                            );
+                        })}
+                    </BidList>
                 </RightSection>
             </SectionContainer>
-            {nft.owner_of.toLowerCase() !== userProfile.address?.toLowerCase() && (
-                <BidSticker
-                    title={nft.metadata.name}
-                    src={nft.metadata.image}
-                    edition={nft.token_id}
-                />
-            )}
+            {currentNft.owner_of.toLowerCase() !== userProfile.address?.toLowerCase() && <BidSticker nft={nft}/>}
         </NFTEl>
     );
 }

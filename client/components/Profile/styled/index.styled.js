@@ -104,3 +104,34 @@ export const StatTitle = styled.span`
 export const StatValue = styled.span`
 	font-weight: 500;
 `;
+
+export const BidGrid = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+`;
+
+export const NftBid = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 1rem 0.5rem;
+	border: 1px solid ${Colors.Border};
+    border-radius: 5px;
+	gap: 0.75rem;
+	img {
+		border-radius: 5px;
+		width: 150px;
+		margin: auto;
+	}
+	> div {
+		margin-top: auto;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		align-items: center;
+	}
+	span {
+		font-size: 0.75rem;
+	}
+`;

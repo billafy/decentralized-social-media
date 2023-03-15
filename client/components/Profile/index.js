@@ -5,17 +5,19 @@ import { Blockie } from "@web3uikit/web3";
 import Edit from "./Edit";
 import Modal from "./Modal";
 import Backdrop from "./Backdrop";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PostGrid } from "../styled/Grid.styled";
-import Grid from "../styled/Grid.styled";
 import Link from "next/link";
 import NFTs from '../NFTs';
-import NFTCard from "../styled/NFTCard.styled";
 import Tab from "../styled/Tab.styled";
 import Posts from "../Posts";
 import axios from "axios";
-import NFT from "@web3uikit/web3";
+import {ethers} from 'ethers';
+import Moralis from 'moralis';
+import addresses from "../../constants/addresses.json";
+import marketplaceAbi from "../../constants/abi.json";
+import { useRouter } from 'next/router'
 import {
     ProfileEl,
     Cover,
@@ -28,9 +30,12 @@ import {
     StatItem,
     StatValue,
     StatTitle,
+    BidGrid,
+    NftBid,
 } from "./styled/index.styled";
 
-const Profile = ({ user, posts, nfts, likes }) => {
+const Profile = ({ user, posts, nfts, likes, biddedNfts }) => {
+    const router = useRouter();
     const dispatch = useDispatch();
     const {
         auth: { isLoggedIn, isLoading, userProfile },
@@ -39,68 +44,6 @@ const Profile = ({ user, posts, nfts, likes }) => {
     const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [profile, setProfile] = useState(user);
-
-    const tabs = [
-        {
-            id: 1,
-            title: "Posts",
-            content: posts.length ? (
-                <PostGrid>
-                    {posts.map((post, i) => {
-                        return (
-                            <Link
-                                key={i}
-                                href={{
-                                    pathname: "/post",
-                                    query: { id: post._id.toString() },
-                                }}
-                                passHref
-                            >
-                                <a>
-                                    <Posts
-                                        key={post._id.toString()}
-                                        post={post}
-                                    />
-                                </a>
-                            </Link>
-                        );
-                    })}
-                </PostGrid>
-            ) : (
-                <Tab />
-            ),
-        },
-        {
-            id: 2,
-            title: "NFTs On Sale",
-            content: nfts.length ? (
-                <PostGrid>
-                    {nfts.map((nft, i) => {
-                        return (
-                            <Link
-                                key={i}
-                                href={{
-                                    pathname: "/nft",
-                                    query: { tokenId: nft.tokenId },
-                                }}
-                                passHref
-                            >
-                                <a>
-									<NFTs
-                                        key={nft.tokenId}
-                                        nft={nft}
-                                    />
-                                </a>
-                            </Link>
-                        );
-                    })}
-                </PostGrid>
-            ) : (
-                <Tab />
-            ),
-        },
-        { id: 3, title: "Liked", content: <Tab /> },
-    ];
 
     const follow = async () => {
         try {
@@ -136,9 +79,131 @@ const Profile = ({ user, posts, nfts, likes }) => {
         }
     };
 
+    const makePayment = async (nft) => {
+        await Moralis.start({
+            apiKey: process.env.NEXT_PUBLIC_MORALIS_API_KEY,
+        });
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner();
+            const marketplace = new ethers.Contract(
+                addresses[process.env.NEXT_PUBLIC_CHAIN_ID],
+                marketplaceAbi,
+                signer
+            );
+            await marketplace.makePayment(nft.token_id, {value: nft.bid.amount});
+            router.reload();
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     useEffect(() => {
         if (profile.username === userProfile.username) setProfile(userProfile);
     }, [userProfile]);
+
+    const tabs = [
+        {
+            id: 1,
+            title: "Posts",
+            content: posts.length ? (
+                <PostGrid>
+                    {posts.map((post, i) => {
+                        return (
+                            <Link
+                                key={i}
+                                href={{
+                                    pathname: "/post",
+                                    query: { id: post._id.toString() },
+                                }}
+                                passHref
+                            >
+                                <a>
+                                    <Posts
+                                        key={post._id.toString()}
+                                        post={post}
+                                    />
+                                </a>
+                            </Link>
+                        );
+                    })}
+                </PostGrid>
+            ) : (
+                <Tab />
+            ),
+        },
+        {
+            id: 2,
+            title: "NFTs",
+            content: nfts.length ? (
+                <PostGrid>
+                    {nfts.map((nft, i) => {
+                        if(!nft.metadata?.image) 
+                            return <Fragment key={i}/>
+                        return (
+                            <Link
+                                key={i}
+                                href={{
+                                    pathname: "/nft",
+                                    query: { tokenId: nft.tokenId },
+                                }}
+                                passHref
+                            >
+                                <a>
+									<NFTs
+                                        key={nft.tokenId}
+                                        nft={nft}
+                                    />
+                                </a>
+                            </Link>
+                        );
+                    })}
+                </PostGrid>
+            ) : (
+                <Tab />
+            ),
+        },
+        {
+            id: 3,
+            title: "Bids",
+            content: biddedNfts.length ? (
+                <BidGrid>
+                    {biddedNfts.map((nft, i) => {
+                        if(!nft.metadata?.image) 
+                            return <Fragment key={i}/>
+                        return (
+                            <NftBid key={i}>
+                                <Link
+                                    href={{
+                                        pathname: "/nft",
+                                        query: { tokenId: nft.token_id },
+                                    }}
+                                    passHref
+                                >
+                                    <img src={nft.metadata.image} alt='NFT'/>
+                                </Link>
+                                <div>
+                                    <h5>#{nft.token_id} {nft.metadata.name}</h5>
+                                    <b>{ethers.utils.formatEther(nft.bid.amount)} ETH</b>
+                                    {nft.bid.status === 'Accepted'
+                                        ?
+                                        <Button text='Pay' onClick={() => makePayment(nft)}/>
+                                        :
+                                        <Button text='Pending' disabled={true}/>
+                                    }
+                                    <span>{nft.bid.status === 'Accepted' && 'Bid Accepted'}</span>
+                                </div>
+                            </NftBid>
+                        );
+                    })}
+                </BidGrid>
+            ) : (
+                <Tab />
+            ),
+        },
+        { id: 4, title: "Liked", content: <Tab /> },
+    ];
 
     if (isLoading)
         return (

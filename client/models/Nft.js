@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
 
-const nftSchema: Schema = new Schema({
+const nftSchema = new Schema({
     tokenId: { type: Number, required: true },
     owner: { type: String, required: true },
     bids: {

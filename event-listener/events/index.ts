@@ -39,7 +39,7 @@ eventEmitter.on("BidAccepted", async (body) => {
         tokenId: getNumber(eventBody.tokenId),
     });
     for (let i = 0; i < nft.bids.length; ++i) {
-        if (nft.bids[i].bidder == eventBody.bidder.toLowerCase()) {
+        if (nft.bids[i].bidder.toLowerCase() === eventBody.bidder.toLowerCase()) {
             nft.bids[i].status = "Accepted";
             break;
         }

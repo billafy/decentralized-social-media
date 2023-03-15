@@ -8,7 +8,6 @@ const Follow = ({ user }) => {
 	const router = useRouter();
 
 	const redirectUser = async () => {
-		console.log(user);
 		await router.replace(`/profile?id=${user._id.toString()}`);
 		router.reload();
 	};

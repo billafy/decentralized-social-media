@@ -1,15 +1,17 @@
 import Profile from "../components/Profile";
 import Moralis from "moralis";
+import axios from "axios";
 import addresses from '../constants/addresses.json'
 
-const ProfilePage = ({ user, posts, nfts, likes }) => {
-    return <Profile {...{user, posts, nfts, likes}} />;
+const ProfilePage = ({ user, posts, nfts, biddedNfts, likes }) => {
+    return <Profile {...{user, posts, nfts, biddedNfts, likes}} />;
 };
 
 export async function getServerSideProps({ query }) {
     const mongoose = (await import("mongoose")).default;
     const UserSchema = (await import("../models/User")).default;
     const PostSchema = (await import("../models/Post")).default;
+    const NftSchema = (await import("../models/Nft")).default;
     const CommentSchema = (await import("../models/Comment")).default;
 
     await mongoose.connect(process.env.MONGO_URI);
@@ -48,13 +50,46 @@ export async function getServerSideProps({ query }) {
             chain: process.env.NEXT_PUBLIC_CHAIN_ID,
         });
 
-        const nfts = response.result.filter(nft => nft.tokenAddress._value === addresses[process.env.NEXT_PUBLIC_CHAIN_ID]);
+        const nfts = response.result.filter(nft => (nft.tokenAddress._value === addresses[process.env.NEXT_PUBLIC_CHAIN_ID] && nft.metadata));
+
+        for(let i = 0; i < nfts.length; ++i) {
+            const nft = await NftSchema.findOne({tokenId: nfts[i]._data.tokenId});
+            if(nft) 
+                nfts[i]._data.bids = nft.bids;
+        }
+
+        const bids = await NftSchema.find({'bids.bidder': user.address});
+        const biddedNfts = [];
+        for(let i = 0; i < bids.length; ++i) {
+            const response = await axios.get(
+                `https://deep-index.moralis.io/api/v2/nft/${
+                    addresses[process.env.NEXT_PUBLIC_CHAIN_ID]
+                }/${bids[i].tokenId}`,
+                {
+                    params: {
+                        chain: "goerli",
+                        format: "decimal",
+                        normalizeMetadata: "false",
+                    },
+                    headers: {
+                        accept: "application/json",
+                        "X-API-Key": process.env.NEXT_PUBLIC_MORALIS_API_KEY,
+                    },
+                }
+            );
+            biddedNfts.push({
+                ...response.data,
+                bid: bids[i]._doc.bids.find(bid => bid.bidder.toLowerCase() === user.address.toLowerCase()),
+                metadata: JSON.parse(response.data.metadata),
+            });
+        }
         
         return {
             props: {
                 user: JSON.parse(JSON.stringify(user)),
                 posts: JSON.parse(JSON.stringify(posts)),
                 nfts: JSON.parse(JSON.stringify(nfts)),
+                biddedNfts: JSON.parse(JSON.stringify(biddedNfts)),
                 likes,
             },
         };

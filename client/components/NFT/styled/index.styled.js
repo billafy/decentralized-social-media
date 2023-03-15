@@ -127,3 +127,20 @@ export const Tag = styled.span`
     font-size: 0.9rem;
     font-weight: 500;
 `;
+
+export const BidList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    > div {
+        border: 1px solid ${Colors.Border};
+        border-radius: 5px;
+        padding: 1rem 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        button {
+            margin-left: auto;
+        }
+    }
+`;

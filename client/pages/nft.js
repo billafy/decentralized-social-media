@@ -10,6 +10,7 @@ const NFTPage = ({ nft, nftOwner, postId }) => {
 export async function getServerSideProps({ query }) {
     const UserSchema = (await import("../models/User")).default;
     const PostSchema = (await import("../models/Post")).default;
+    const NftSchema = (await import("../models/Nft")).default;
     const CommentSchema = (await import("../models/Comment")).default;
 
     try {
@@ -36,7 +37,20 @@ export async function getServerSideProps({ query }) {
             profileId: 0,
         }).exec();
 
-        const post = await PostSchema.findOne({mediaUrl: JSON.parse(response.data.metadata).image, user: nftOwner._id}, {_id: 1});
+        const post = await PostSchema.findOne({mediaUrl: JSON.parse(response.data.metadata).image}, {_id: 1});
+
+        const nft = await NftSchema.findOne({tokenId: query.tokenId});
+        
+        const bids = [];
+        for(let i = 0; i < nft.bids.length; ++i) {
+            const bidder = await UserSchema.findOne({'address': {'$regex': nft.bids[i].bidder, '$options':'i'}}).exec();
+            bids.push({
+                bidder: bidder.address,
+                amount: nft.bids[i].amount,
+                status: nft.bids[i].status,
+                user: bidder
+            });
+        }
 
         return {
             props: {
@@ -45,6 +59,7 @@ export async function getServerSideProps({ query }) {
                     JSON.stringify({
                         ...response.data,
                         metadata: JSON.parse(response.data.metadata),
+                        bids,
                     })
                 ),
                 postId: post._id.toString(),

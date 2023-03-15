@@ -33,6 +33,7 @@ app.post("/", (req: Request, res: Response) => {
             console.log(`Parsing event - ${eventName}`);
             eventEmitter.emit(eventName, req.body);
         }
+        res.json({success: true});
     } catch (err) {
         console.log(err);
         res.json({ success: false });
