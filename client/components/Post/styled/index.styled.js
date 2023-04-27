@@ -37,6 +37,10 @@ export const LeftSection = styled.div`
 export const ImageEl = styled.div`
     border-radius: 5px;
     overflow: hidden;
+    width: 100%;
+    img {
+        width: 100%;
+    }
 `;
 
 export const RightSection = styled.div`

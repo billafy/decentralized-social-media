@@ -122,7 +122,7 @@ export default function NFT({ nftOwner, nft, postId }) {
                         mintDate={currentNft.last_token_uri_sync}
                     />
                     <a
-                        href={`https://testnets.opensea.io/assets/goerli/${
+                        href={`https://testnets.opensea.io/assets/sepolia/${
                             addresses[process.env.NEXT_PUBLIC_CHAIN_ID]
                         }/${currentNft.token_id}`}
                         target="_blank"
@@ -132,7 +132,7 @@ export default function NFT({ nftOwner, nft, postId }) {
                         </ChainLink>
                     </a>
                     <a
-                        href={`https://goerli.etherscan.io/token/${
+                        href={`https://sepolia.etherscan.io/token/${
                             addresses[process.env.NEXT_PUBLIC_CHAIN_ID]
                         }?a=${currentNft.token_id}#inventory`}
                         target="_blank"

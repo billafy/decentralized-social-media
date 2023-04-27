@@ -67,7 +67,7 @@ export async function getServerSideProps({ query }) {
                 }/${bids[i].tokenId}`,
                 {
                     params: {
-                        chain: "goerli",
+                        chain: "sepolia",
                         format: "decimal",
                         normalizeMetadata: "false",
                     },

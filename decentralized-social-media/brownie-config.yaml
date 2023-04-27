@@ -9,6 +9,8 @@ networks:
     verify: true
   goerli: 
     verify: true
+  sepolia: 
+    verify: true
   development:
     verify: false
 wallets: 

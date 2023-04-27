@@ -6,3 +6,8 @@ live:
     host: https://eth-goerli.g.alchemy.com/v2/QjUW7A_rEmw7pRMitKYbQsyhWCWFtIkr
     id: goerli-alchemy
     name: Goerli (alchemy)
+  - chainid: 11155111
+    explorer: https://sepolia.etherscan.io/
+    host: https://eth-sepolia.g.alchemy.com/v2/3-UM0bWboMxbYutI_1gxW_5Vsu24vRga
+    id: sepolia-alchemy
+    name: Sepolia (alchemy)

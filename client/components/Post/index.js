@@ -53,12 +53,7 @@ export default function Post({ post }) {
             <SectionContainer>
                 <LeftSection>
                     <ImageEl>
-                        <Image
-                            src={currentPost.mediaUrl}
-                            layout="responsive"
-                            width="1000px"
-                            height="1000px"
-                        />
+                        <img src={currentPost.mediaUrl} alt='Post'/>
                     </ImageEl>
                     <Interact>
                         <Share>

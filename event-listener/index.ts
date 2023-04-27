@@ -26,6 +26,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.post("/", (req: Request, res: Response) => {
     try {
+        console.log(1);
         if (!req.body) return res.json({ success: false });
         for (const log of req.body.logs) {
             const topic0: string = log.topic0;

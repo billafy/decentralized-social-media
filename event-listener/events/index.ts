@@ -7,6 +7,7 @@ import {
     Withdrawn,
     NftTransferred,
 } from "../types";
+import UserSchema from "../models/User";
 import NftSchema from "../models/Nft";
 import { getNumber } from "../utils";
 
@@ -50,17 +51,22 @@ eventEmitter.on("BidAccepted", async (body) => {
 
 eventEmitter.on("Withdrawn", async (body) => {
     const eventBody = Moralis.Streams.parsedLogs<Withdrawn>(body)[0];
-    console.log(eventBody);
 });
 
 eventEmitter.on("NftTransferred", async (body) => {
     const eventBody = Moralis.Streams.parsedLogs<NftTransferred>(body)[0];
     const nft = await NftSchema.findOne({
         tokenId: getNumber(eventBody.tokenId),
-    });
+    }).exec();
     nft.owner = eventBody.to;
     nft.bids = [];
     nft.markModified("bids");
+    try {
+        const user = await UserSchema.findOne({address: eventBody.from.toString().toLowerCase()});
+        const bid = nft.bids.find((bid: { bidder: string; amount: number }) => bid.bidder.toLowerCase() === eventBody.to.toString().toLowerCase());
+        user.earnings += Number(bid.amount);
+        await user.save();
+    } catch {}
     await nft.save();
 });
 

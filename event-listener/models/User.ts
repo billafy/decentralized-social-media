@@ -23,6 +23,10 @@ const userSchema: Schema = new Schema({
 		type: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
 		default: [],
 	},
+	earnings: {
+		type: Number,
+		default: 0
+	},
 });
 
 const User = models.User || model('User', userSchema);

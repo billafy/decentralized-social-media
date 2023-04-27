@@ -286,7 +286,11 @@ const Profile = ({ user, posts, nfts, likes, biddedNfts }) => {
                         <StatValue>{likes}</StatValue>
                     </StatItem>
                     <StatItem>
-                        <StatTitle>Earnings</StatTitle>
+                        <StatTitle>Total Earnings</StatTitle>
+                        <StatValue>{profile.earnings} ETH</StatValue>
+                    </StatItem>
+                    <StatItem>
+                        <StatTitle>Current Balance</StatTitle>
                         <StatValue>{profile.balance} ETH</StatValue>
                     </StatItem>
                     <StatItem>

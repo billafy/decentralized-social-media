@@ -75,13 +75,13 @@ export const Bio = styled.p`
 `;
 
 export const Stats = styled.div`
-	width: 700px;
+	width: 900px;
 	max-width: 95%;
 	margin: auto;
 	border-top: 1px solid ${Colors.Border};
 	border-bottom: 1px solid ${Colors.Border};
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(5, 1fr);
 	align-items: center;
 	justify-content: center;
 `;
@@ -96,7 +96,7 @@ export const StatItem = styled.div`
 export const StatTitle = styled.span`
 	color: ${Colors.Gray};
 	:hover {
-		transform: scale(1.5);
+		transform: scale(1.03);
 		color: ${Colors.Secondary};
 	}
 `;
